@@ -107,6 +107,12 @@ Long tasks run on the server: **Run all presets**, the **Report checker**, **Gen
 
 The platform is one Node.js process (no build step) that keeps its data in files under `data/`.
 
+**Data storage: no database server of its own**
+- The platform's own data (testers, projects, test cases, test runs, API checks, settings, screenshots, audit log and encrypted keys) is stored as JSON files and images in **`data/`** (`/app/data` in Docker). There is nothing to create or migrate.
+- In practice **`data/` is the platform's database**: keep it on **persistent storage** (a Docker volume or persistent disk, so it survives rebuilds and restarts) and include it in **regular backups**. If it's lost, all the platform's data is lost.
+- Because the data lives on one server's disk, run **a single instance**, not load-balanced copies. If a managed database (MySQL or Postgres) is required for policy or high availability, the storage code is in one place (`src/store.js`) and can be moved over.
+- The only database it connects to is the existing **Sinque DEV MySQL** database, for the Sinque test tools (test users, rule and report checks, test-data cleanup).
+
 **Requirements**
 - Node.js 18+ (20 LTS recommended), or Docker.
 - Network access from the server to: the Sinque **DEV** database (MySQL, port 3306: VPN / IP allow-list on the RDS security group), the Sinque DEV API and admin dashboard, `*.atlassian.net` (Jira), and the AI provider in use (`api.openai.com`, `api.anthropic.com` or `generativelanguage.googleapis.com`).
@@ -115,7 +121,10 @@ The platform is one Node.js process (no build step) that keeps its data in files
 **Option A: Docker** (includes the browser for UI automation)
 ```bash
 docker build -t efutures-qa .
-docker run -d --name efutures-qa --restart unless-stopped   -p 4321:4321 --env-file .env   -v efutures-qa-data:/app/data -v efutures-qa-logs:/app/logs   efutures-qa
+docker run -d --name efutures-qa --restart unless-stopped \
+  -p 4321:4321 --env-file .env \
+  -v efutures-qa-data:/app/data -v efutures-qa-logs:/app/logs \
+  efutures-qa
 ```
 
 **Option B: plain Node.js** (Linux VM)
