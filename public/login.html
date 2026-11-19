@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · eFutures QA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #f4f6f8; --surface: #fff; --ink: #0f1d24; --ink-2: #3b4a52; --muted: #6b7a83; --line: #e3e8ec; --brand: #0e7490; --bad: #c0362c; --bad-bg: #fdecea; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0b1114; --surface: #121a1e; --ink: #e8eef1; --ink-2: #c3cfd5; --muted: #8a9aa2; --line: #24323a; --brand: #22b3cf; --bad: #f87171; --bad-bg: #2d1515; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr; background: var(--bg); color: var(--ink); font: 14px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  .art { position: relative; overflow: hidden; padding: 48px; display: flex; flex-direction: column; justify-content: space-between; color: #d6e6eb;
+    background: radial-gradient(1200px 600px at 10% 110%, rgba(52, 211, 153, .35), transparent 60%), radial-gradient(900px 500px at 100% -10%, rgba(34, 179, 207, .35), transparent 60%), linear-gradient(160deg, #0b1d24, #12303a); }
+  .art::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, .08) 1px, transparent 1px); background-size: 22px 22px; mask-image: linear-gradient(180deg, transparent, #000 40%, transparent); }
+  .brand { display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
+  .logo { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(135deg, #22b3cf, #34d399); color: #062027; font-weight: 800; font-size: 19px; box-shadow: 0 10px 24px -8px rgba(52, 211, 153, .7); }
+  .brand b { color: #fff; font-size: 17px; display: block; }
+  .brand span { font-size: 12.5px; color: #8fb0ba; }
+  .pitch { position: relative; z-index: 1; max-width: 460px; }
+  .pitch h1 { color: #fff; font-size: 34px; line-height: 1.15; letter-spacing: -.03em; margin: 0 0 14px; }
+  .pitch h1 em { font-style: normal; background: linear-gradient(90deg, #5eead4, #34d399); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .pitch p { margin: 0 0 26px; color: #a9c4cc; font-size: 15px; }
+  .feat { display: grid; gap: 12px; }
+  .feat div { display: flex; gap: 12px; align-items: center; color: #d6e6eb; }
+  .feat svg { width: 30px; height: 30px; padding: 6px; border-radius: 9px; background: rgba(255, 255, 255, .08); stroke: #5eead4; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .foot { position: relative; z-index: 1; font-size: 12px; color: #6f909a; }
+  .side { display: grid; place-items: center; padding: 32px 20px; }
+  form { width: 100%; max-width: 360px; }
+  form h2 { font-size: 24px; letter-spacing: -.02em; margin: 0 0 6px; }
+  form p { margin: 0 0 26px; color: var(--muted); }
+  label { display: block; font-size: 13px; font-weight: 500; color: var(--ink-2); margin-bottom: 16px; }
+  input { display: block; width: 100%; margin-top: 6px; font: 15px inherit; font-family: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 11px; padding: 11px 13px; outline: none; transition: border-color .15s, box-shadow .15s; }
+  input:focus { border-color: var(--brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 16%, transparent); }
+  button { width: 100%; margin-top: 6px; font: 600 15px inherit; font-family: inherit; border: 0; border-radius: 11px; padding: 12px; color: #fff; cursor: pointer; background: linear-gradient(135deg, #0e7490, #0b8a73); box-shadow: 0 10px 22px -10px rgba(14, 116, 144, .9); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  button:hover { filter: brightness(1.06); }
+  button:disabled { opacity: .7; cursor: progress; }
+  .spin { display: none; width: 16px; height: 16px; border: 2px solid #fff; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
+  button:disabled .spin { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .err { display: none; margin-bottom: 16px; padding: 10px 12px; border-radius: 10px; background: var(--bad-bg); color: var(--bad); font-size: 13.5px; }
+  .note { margin-top: 22px; font-size: 12.5px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+  .note svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; flex: none; }
+  @media (max-width: 860px) {
+    body { grid-template-columns: 1fr; }
+    .art { display: none; }
+  }
+</style>
+</head>
+<body>
+<section class="art">
+  <div class="brand"><div class="logo" style="font-size:16px;letter-spacing:-.02em">eF</div><div><b>eFutures QA</b><span>Test platform</span></div></div>
+  <div class="pitch">
+    <h1>Test every eFutures project <em>in one place</em>.</h1>
+    <p>Test cases, release runs, API checks and environment health for every project, with Jira built in, and product packs that create test data and check results for you.</p>
+    <div class="feat">
+      <div><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Test runs per release, with evidence and a sign-off report</div>
+      <div><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>API checks and health for every environment</div>
+      <div><svg viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 3v6L4.5 19a1.5 1.5 0 0 0 1.3 2.2h12.4a1.5 1.5 0 0 0 1.3-2.2L14 9V3"/></svg>Product packs: Sinque test users, scenarios and rule checks</div>
+    </div>
+  </div>
+  <div class="foot">Test environments only · every change is recorded</div>
+</section>
+<section class="side">
+  <form id="f">
+    <h2>Welcome back</h2>
+    <p>Sign in with your QA account.</p>
+    <div class="err" id="err"></div>
+    <label>Username<input name="username" autocomplete="username" autofocus required></label>
+    <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+    <button id="btn"><span class="spin"></span>Sign in</button>
+    <div class="note"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Ask a platform admin for an account.</div>
+  </form>
+</section>
+<script>
+document.getElementById("f").onsubmit = async e => {
+  e.preventDefault();
+  const btn = document.getElementById("btn"), err = document.getElementById("err");
+  btn.disabled = true; err.style.display = "none";
+  try {
+    const data = Object.fromEntries(new FormData(e.target));
+    const res = await fetch("/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.error || "Sign in failed.");
+    location.href = "/";
+  } catch (ex) {
+    err.textContent = ex.message; err.style.display = "block";
+  } finally {
+    btn.disabled = false;
+  }
+};
+</script>
+</body>
+</html>

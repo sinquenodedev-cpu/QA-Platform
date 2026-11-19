@@ -1,0 +1,25 @@
+{
+  "name": "efutures-qa-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "eFutures QA platform: test cases, test runs, API checks, environment health and Jira for every eFutures project, with product packs (Sinque first)",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "sinque:api-checks": "node scripts/sinque-api-checks.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.4.0",
+    "@google/generative-ai": "^0.24.1",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.9.7",
+    "openai": "^6.49.0",
+    "playwright": "^1.56.1",
+    "qrcode": "^1.5.4",
+    "yaml": "^2.8.1"
+  }
+}
