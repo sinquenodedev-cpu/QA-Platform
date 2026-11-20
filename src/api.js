@@ -2,7 +2,7 @@
 import { config } from "./config.js";
 
 const call = async (method, path, body, token) => {
-  if (!config.apiBaseUrl) throw new Error("API_BASE_URL is not set in .env.");
+  if (!config.apiBaseUrl) throw Object.assign(new Error("The Sinque API address isn't set up yet. An admin can add it on the Settings page, under Sinque app."), { status: 400 });
   const res = await fetch(`${config.apiBaseUrl}${path}`, {
     method,
     headers: { "Content-Type": "application/json", "Accept-Language": "en", ...(token ? { Authorization: `Bearer ${token}` } : {}) },

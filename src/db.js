@@ -1,8 +1,11 @@
 import mysql from "mysql2/promise";
-import { config } from "./config.js";
+import { SINQUE_DB_MISSING, config } from "./config.js";
 
 // Dates are read and written as UTC, like the backend.
-const makePool = db => mysql.createPool({ ...db, timezone: "Z", connectionLimit: 5 });
+// Without a Sinque database the stand-in answers every call with a clear message.
+const notSet = async () => { throw Object.assign(new Error(SINQUE_DB_MISSING), { status: 400 }); };
+const NO_DATABASE = { query: notSet, execute: notSet, getConnection: notSet, end: async () => {} };
+const makePool = db => (db.host && db.database ? mysql.createPool({ ...db, timezone: "Z", connectionLimit: 5 }) : NO_DATABASE);
 // `let`: importers see the new pool after the Settings page changes the database.
 export let pool = makePool(config.db);
 

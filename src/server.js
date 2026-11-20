@@ -1,4 +1,4 @@
-import { config, TEST_EMAIL_DOMAIN } from "./config.js";
+import { config, sinqueDbSet, SINQUE_DB_MISSING, TEST_EMAIL_DOMAIN } from "./config.js";
 import fs from "fs";
 import http from "http";
 import path from "path";
@@ -65,7 +65,8 @@ const requireAdmin = req => {
  */
 let environmentCheck = { checked: false };
 const checkEnvironment = async () => {
-  if (!config.apiBaseUrl) return (environmentCheck = { checked: true, ok: false, message: "API_BASE_URL is not set in .env." });
+  if (!sinqueDbSet()) return (environmentCheck = { checked: true, ok: false, not_set: true, message: SINQUE_DB_MISSING });
+  if (!config.apiBaseUrl) return (environmentCheck = { checked: true, ok: false, not_set: true, message: "The Sinque API address isn't set up yet. An admin can add it on the Settings page, under Sinque app." });
   try {
     const [user] = await query("SELECT id FROM users WHERE role = 1 AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1");
     if (!user) return (environmentCheck = { checked: true, ok: true, message: "No users to compare." });
@@ -131,8 +132,8 @@ const runTicketCase = async (key, caseId, actor) => {
 
 const routes = [
   ["GET", /^\/api\/info$/, async () => ({
-    db_host: config.db.host,
-    db_name: config.db.database,
+    db_host: config.db.host || "",
+    db_name: config.db.database || "",
     api_base_url: config.apiBaseUrl,
     test_password: config.testPassword,
     test_domain: TEST_EMAIL_DOMAIN,
@@ -879,8 +880,8 @@ server.on("error", error => {
 
 server.listen(config.port, process.env.HOST || "127.0.0.1", () => {
   console.log(`\neFutures QA platform: http://localhost:${config.port}`);
-  console.log(`Database: ${config.db.host} / ${config.db.database}`);
-  console.log(`API:      ${config.apiBaseUrl || "(API_BASE_URL not set — reports and login checks disabled)"}`);
+  console.log(`Sinque DB:  ${sinqueDbSet() ? `${config.db.host} / ${config.db.database}` : "not set (Sinque tools off until it's added on the Settings page)"}`);
+  console.log(`Sinque API: ${config.apiBaseUrl || "not set (reports and login checks off until it's added on the Settings page)"}`);
   console.log(`Testers:  ${listTesters().map(t => `${t.name}${t.role === "admin" ? " (admin)" : ""}`).join(", ")}`);
   console.log(`Projects: ${allProjects().map(p => p.name).join(", ")}\n`);
   checkEnvironment();

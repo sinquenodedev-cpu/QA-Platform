@@ -54,10 +54,8 @@ const fail = message => {
 
 const env = process.env;
 
-if (!env.DATABASE_HOST) {
-  fail("DATABASE_HOST is not set. Copy .env.example to .env and fill in the DEV settings.");
-}
-
+// The Sinque database and API are optional: without them the platform runs and only the
+// Sinque tools are off until an admin sets them on the Settings page. When set, they must be DEV.
 for (const name of ["DATABASE_HOST", "API_BASE_URL"]) {
   if (devGuard(name, env[name])) fail(`${name}=${env[name]} does not look like DEV. This tool only runs against the DEV environment.`);
 }
@@ -104,6 +102,10 @@ export const config = {
   port: Number(env.PORT || 4321),
   ...fromEnv(),
 };
+
+/** Are the Sinque database settings filled in? */
+export const sinqueDbSet = () => !!(config.db.host && config.db.database);
+export const SINQUE_DB_MISSING = "The Sinque database isn't set up yet. An admin can add it on the Settings page, under Sinque database.";
 
 /** After the Settings page saves: re-read the saved settings into config (same object, so every module sees it). */
 export const reloadConfig = () => {

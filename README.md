@@ -96,7 +96,7 @@ Long tasks run on the server: **Run all presets**, the **Report checker**, **Gen
    npm install
    cp .env.example .env
    ```
-3. Fill in `.env`: the DEV database settings, and `API_BASE_URL` (the dev API, needed for reports and login checks).
+3. Fill in the platform section of `.env` (`QA_USERS`, `SESSION_SECRET`, `JIRA_TOKEN_KEY`). For the Sinque tools, add the DEV database and `API_BASE_URL` here or later on **Settings → Sinque database / Sinque app**.
 4. Start it:
    ```bash
    npm start
@@ -111,7 +111,7 @@ The platform is one Node.js process (no build step) that keeps its data in files
 - The platform's own data (testers, projects, test cases, test runs, API checks, settings, screenshots, audit log and encrypted keys) is stored as JSON files and images in **`data/`** (`/app/data` in Docker). There is nothing to create or migrate.
 - In practice **`data/` is the platform's database**: keep it on **persistent storage** (a Docker volume or persistent disk, so it survives rebuilds and restarts) and include it in **regular backups**. If it's lost, all the platform's data is lost.
 - Because the data lives on one server's disk, run **a single instance**, not load-balanced copies. If a managed database (MySQL or Postgres) is required for policy or high availability, the storage code is in one place (`src/store.js`) and can be moved over.
-- The only database it connects to is the existing **Sinque DEV MySQL** database, for the Sinque test tools (test users, rule and report checks, test-data cleanup).
+- The only database it connects to is the existing **Sinque DEV MySQL** database, for the Sinque test tools (test users, rule and report checks, test-data cleanup). That's optional: an admin adds it on the Settings page after the platform is up, and without it only the Sinque tools are off.
 
 **Requirements**
 - Node.js 18+ (20 LTS recommended), or Docker.
@@ -139,7 +139,9 @@ HOST=0.0.0.0 node src/server.js               # or run it under systemd / pm2
 - `SESSION_SECRET`: a long random string (e.g. `openssl rand -hex 32`). Without it everyone is signed out on every restart.
 - `JIRA_TOKEN_KEY`: a long random string. It encrypts the API keys, Jira tokens and saved values stored in `data/`. Keep it safe and never change it, or those can't be read any more (if it's not set, a key is generated in `data/jira.key`: then back that file up with the data).
 - `QA_USERS`: the first admin account (`name:password`); more testers are added in the platform.
-- The DEV database, API and dashboard settings, and an AI key. Jira and AI can also be set later on the Settings page.
+- `HOST=0.0.0.0` (already set in the Docker image) and `JIRA_BASE_URL`.
+
+Nothing else is needed to start. The Sinque database and API, the AI key and Jira are set by an admin on the **Settings** page after the platform is up, stored encrypted in `data/`, so no database password has to be put in `.env` or sent to IT. Testers connect their own Jira accounts.
 
 **In front of it**: put it behind HTTPS (nginx, a load balancer or similar) and forward `X-Forwarded-Proto` and `X-Forwarded-For`; sign-in cookies are marked secure over HTTPS. Limit access to the company network/VPN if possible.
 

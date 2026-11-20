@@ -3125,10 +3125,12 @@ const healthTile = (ic, label, value, ok, note) => `<div class="health-tile ${ok
   <span class="health-dot"></span></div>`;
 
 const renderHealth = () => {
-  if (!INFO.db_name) return;
+  if (INFO.db_name === undefined) return;
   const env = INFO.environment || {};
   $("homeHealth").innerHTML = [
-    healthTile("db", "Database", INFO.db_name, env.ok !== false, env.ok === false ? "Doesn't match the API" : "DEV · connected"),
+    INFO.db_name
+      ? healthTile("db", "Database", INFO.db_name, env.ok !== false, env.ok === false ? (env.not_set ? "Sinque API not set" : "Doesn't match the API") : "DEV · connected")
+      : healthTile("db", "Database", "Not set", null, "Add it under Settings → Sinque database"),
     healthTile("cloud", "Dev API", INFO.api_base_url ? INFO.api_base_url.replace(/^https?:\/\//, "") : "Not set", INFO.api_base_url ? env.ok !== false : false, env.ok === false ? env.message || "Check settings" : "Answering"),
     healthTile("sparkle", "AI", INFO.ai_enabled ? "Gemini" : "Off", INFO.ai_enabled ? true : null, INFO.ai_enabled ? "Explain, test cases, search" : "Add GEMINI_API_KEY"),
     healthTile("ticket", "Jira", INFO.jira_enabled ? `Project ${INFO.jira_project}` : "Off", INFO.jira_enabled ? true : null, INFO.jira_enabled ? "Tickets and test cases" : "Add JIRA_EMAIL and token"),
@@ -5094,8 +5096,8 @@ const paintSideInfo = (info = INFO) => {
   if (sinque) {
     const ok = !!(info.api_base_url && info.environment?.ok);
     $("envDot").classList.toggle("off", !ok);
-    $("envState").textContent = ok ? "Connected" : "Check settings";
-    $("dbName").textContent = info.db_name || "—"; $("dbName").title = info.db_host || "";
+    $("envState").textContent = ok ? "Connected" : info.environment?.not_set ? "Not set up" : "Check settings";
+    $("dbName").textContent = info.db_name || "Not set"; $("dbName").title = info.db_host || "";
     $("apiName").textContent = info.api_base_url ? info.api_base_url.replace(/^https?:\/\//, "") : "API not set";
     $("apiName").title = info.api_base_url || "";
     return;

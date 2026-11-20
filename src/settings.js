@@ -175,4 +175,4 @@ const applyChanges = id => {
   if (id === "sinque" || id === "database") resetTokens();
 };
 
-export const settingsSummary = () => ({ db: `${config.db.host} / ${config.db.database}`, api: config.apiBaseUrl, ai: aiInfo() });
+export const settingsSummary = () => ({ db: config.db.host ? `${config.db.host} / ${config.db.database}` : "not set", api: config.apiBaseUrl, ai: aiInfo() });
