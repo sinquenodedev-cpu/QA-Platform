@@ -39,6 +39,7 @@ import { coverage as apiCoverage, fetchSpec, parseOpenApi, readSpecText, saveSpe
 import { sinqueApiInfo } from "./sinqueapi.js";
 import { connect as connectJira, connectionInfo as jiraConnection, disconnect as disconnectJira, requestContext } from "./jirauser.js";
 import { checkAll, projectHealth, startHealth } from "./health.js";
+import { overview } from "./overview.js";
 import {
   addComment, createTicket, getTicket, postTestCases, updateTicket, jiraEnabled, jiraInfo, linkUsers, listTickets, readTestCases, saveTestCases, testCasesToWiki, ticketsFor,
 } from "./jira.js";
@@ -146,6 +147,7 @@ const routes = [
   })],
 
   ["GET", /^\/api\/home$/, () => homeData()],
+  ["GET", /^\/api\/overview$/, req => overview(proj(req))],
   ["GET", /^\/api\/jobs$/, req => listJobs(req.actor)],
 
   // ---------- Platform: projects ----------

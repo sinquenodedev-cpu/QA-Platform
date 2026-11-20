@@ -48,29 +48,7 @@
 
   /* ---------- shell ---------- */
   .app { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
-  aside { background: linear-gradient(180deg, var(--side) 0%, var(--side-2) 140%); color: var(--side-ink); display: flex; flex-direction: column; padding: 20px 14px; position: sticky; top: 0; height: 100vh; }
-  .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 22px; }
-  .logo { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: linear-gradient(135deg, #22b3cf, #34d399); color: #062027; font-weight: 800; font-size: 17px; box-shadow: 0 6px 18px -6px rgba(52, 211, 153, .6); }
-  .brand b { display: block; color: #fff; font-size: 15px; letter-spacing: -.01em; }
-  .brand span { font-size: 11.5px; color: var(--side-muted); }
-  .nav { display: flex; flex-direction: column; gap: 2px; }
-  .nav button { display: flex; align-items: center; gap: 11px; width: 100%; border: 0; background: none; color: var(--side-ink); font: 500 14px var(--font); padding: 10px 12px; border-radius: 10px; cursor: pointer; text-align: left; transition: background .15s, color .15s; }
-  .nav button:hover { background: rgba(255, 255, 255, .06); color: #fff; }
-  .nav button.active { background: rgba(34, 179, 207, .16); color: #fff; box-shadow: inset 3px 0 0 #34d399; }
-  .nav-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--side-muted); padding: 0 12px 8px; }
-  .side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
-  .env { background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .07); border-radius: 12px; padding: 12px; font-size: 12.5px; }
-  .env-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; color: var(--side-ink); overflow: hidden; }
-  .env-row span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .env-row:first-child { margin-top: 0; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: #34d399; box-shadow: 0 0 0 3px rgba(52, 211, 153, .18); flex: none; }
-  .dot.off { background: #fbbf24; box-shadow: 0 0 0 3px rgba(251, 191, 36, .18); }
-  .me { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 12px; }
-  .me .avatar { width: 32px; height: 32px; font-size: 12px; }
-  .me b { color: #fff; font-weight: 600; display: block; font-size: 13px; }
-  .me small { color: var(--side-muted); }
-  .me button { margin-left: auto; background: none; border: 0; color: var(--side-muted); cursor: pointer; padding: 6px; border-radius: 8px; display: grid; }
-  .me button:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+  /* sidebar: see the "sidebar" block further down */
 
   main { min-width: 0; padding: 28px 36px 48px; max-width: 1280px; width: 100%; }
   .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
@@ -384,19 +362,62 @@
   .kept summary svg.i { width: 15px; height: 15px; }
   .kept ul { margin: 8px 0 0; padding-left: 20px; font-size: 13px; max-height: 180px; overflow-y: auto; }
 
-  /* theme switch */
-  .theme-row { display: flex; }
-  .theme-seg { display: flex; width: 100%; padding: 3px; gap: 2px; border-radius: 11px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .07); }
-  .theme-seg button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 4px; border: 0; border-radius: 8px; background: none;
-                      color: var(--side-muted); font: 600 12px var(--font); cursor: pointer; transition: background .15s, color .15s; }
-  .theme-seg button svg.i { width: 14px; height: 14px; }
-  .theme-seg button:hover { color: #fff; }
-  .theme-seg button.on { background: rgba(255, 255, 255, .12); color: #fff; }
-  .theme-cycle { display: none; width: 40px; height: 36px; margin: 0 auto; border: 0; border-radius: 10px; background: rgba(255, 255, 255, .06); color: var(--side-ink); cursor: pointer; place-items: center; }
-  .theme-cycle:hover { color: #fff; background: rgba(255, 255, 255, .1); }
+  /* ---------- sidebar ---------- */
+  aside { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; padding: 16px 12px 12px; color: var(--side-ink);
+          background: radial-gradient(140% 38% at 0% 0%, rgba(34, 179, 207, .16), transparent 62%), radial-gradient(120% 30% at 100% 100%, rgba(52, 211, 153, .08), transparent 60%), var(--side);
+          border-right: 1px solid rgba(255, 255, 255, .06); }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 2px 6px 16px; }
+  .logo { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; flex: none; background: linear-gradient(135deg, #22b3cf, #34d399); color: #062027; font-weight: 800; font-size: 16px; box-shadow: 0 6px 18px -6px rgba(52, 211, 153, .6), inset 0 1px 0 rgba(255, 255, 255, .35); }
+  .brand b { display: block; color: #fff; font-size: 14.5px; letter-spacing: -.01em; line-height: 1.2; }
+  .brand span { font-size: 11.5px; color: var(--side-muted); }
+
+  .proj-switch { position: relative; margin: 0 0 6px; }
+  .proj-btn { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 8px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .08); background: rgba(255, 255, 255, .04);
+              color: var(--side-ink); cursor: pointer; font: inherit; text-align: left; transition: background .15s, border-color .15s; }
+  .proj-btn:hover { background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .14); }
+  .proj-btn:focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+
+  .nav { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 1px; overflow-y: auto; overflow-x: hidden; margin: 0 -6px; padding: 8px 6px 14px; scrollbar-width: none;
+         -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 calc(100% - 18px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 calc(100% - 18px), transparent 100%); }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav > * { flex-shrink: 0; }
+  .nav button { position: relative; display: flex; align-items: center; gap: 11px; width: 100%; height: 34px; padding: 0 10px; border: 0; border-radius: 9px; background: none;
+                color: var(--side-ink); font: 500 13.5px var(--font); cursor: pointer; text-align: left; transition: background .15s, color .15s; }
+  .nav button svg.i { width: 17px; height: 17px; color: var(--side-muted); transition: color .15s; }
+  .nav button:hover { background: rgba(255, 255, 255, .05); color: #fff; }
+  .nav button:hover svg.i { color: var(--side-ink); }
+  .nav button:focus-visible { outline: 2px solid #34d399; outline-offset: -2px; }
+  .nav button.active { background: linear-gradient(90deg, rgba(34, 179, 207, .22), rgba(34, 179, 207, .05)); color: #fff; font-weight: 600; }
+  .nav button.active svg.i { color: #5eead4; }
+  .nav button.active::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: linear-gradient(#22d3ee, #34d399); }
+  .nav .lbl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav-label { padding: 14px 10px 5px; font: 600 10.5px var(--font); letter-spacing: .09em; text-transform: uppercase; color: var(--side-muted); opacity: .85; white-space: nowrap; }
+
+  .side-foot { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .07); }
+  .env { display: flex; align-items: center; gap: 6px; min-width: 0; padding: 7px 10px; border-radius: 9px; background: rgba(255, 255, 255, .04); font-size: 12px; }
+  .env-row { display: flex; align-items: center; gap: 8px; min-width: 0; color: var(--side-ink); }
+  .env-row span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .env-row b { color: #fff; font-weight: 600; white-space: nowrap; }
+  .env-row:nth-child(2) { color: var(--side-muted); }
+  .env-row:nth-child(2)::before { content: "·"; }
+  .env-row:nth-child(n+3) { display: none; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #34d399; box-shadow: 0 0 0 3px rgba(52, 211, 153, .18); flex: none; }
+  .dot.off { background: #fbbf24; box-shadow: 0 0 0 3px rgba(251, 191, 36, .18); }
+
+  .me { display: flex; align-items: center; gap: 9px; padding: 4px 2px 0 4px; }
+  .me .avatar { width: 32px; height: 32px; font-size: 12px; box-shadow: 0 0 0 2px rgba(255, 255, 255, .08); }
+  .me .who { flex: 1; min-width: 0; cursor: pointer; }
+  .me .who:hover b { text-decoration: underline; text-underline-offset: 2px; }
+  .me b { display: block; color: #fff; font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .me small { display: block; color: var(--side-muted); font-size: 11.5px; }
+  .me-actions { display: flex; gap: 2px; }
+  .me-actions button { width: 30px; height: 30px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--side-muted); cursor: pointer; transition: background .15s, color .15s; }
+  .me-actions button svg.i { width: 16px; height: 16px; }
+  .me-actions button:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+  .me-actions button:focus-visible { outline: 2px solid #34d399; outline-offset: 1px; }
 
   /* collapsible sidebar */
-  .collapse-btn { position: absolute; top: 30px; right: -13px; z-index: 5; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  .collapse-btn { position: absolute; top: 24px; right: -13px; z-index: 5; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
                   border: 1px solid var(--line); background: var(--surface); color: var(--muted); box-shadow: var(--shadow); opacity: 0; transition: opacity .2s, transform .25s, color .15s; }
   .collapse-btn svg.i { width: 15px; height: 15px; transition: transform .25s; }
   aside:hover .collapse-btn, .collapse-btn:focus-visible, .app.collapsed .collapse-btn { opacity: 1; }
@@ -404,30 +425,19 @@
   @media (min-width: 901px) {
     .app { grid-template-columns: auto 1fr; }
     aside { width: 248px; transition: width .22s ease, padding .22s ease; }
-    .app.collapsed aside { width: 76px; }
-    .app.collapsed aside { padding: 20px 12px; }
+    .app.collapsed aside { width: 68px; padding: 16px 10px 12px; }
     .app.collapsed .collapse-btn svg.i { transform: rotate(180deg); }
-    .app.collapsed .brand { justify-content: center; padding: 4px 0 22px; }
-    .app.collapsed .brand-text, .app.collapsed .nav .lbl, .app.collapsed .env, .app.collapsed .me .who, .app.collapsed .theme-seg { display: none; }
-    .app.collapsed .theme-cycle { display: grid; }
-    .app.collapsed .nav-label { font-size: 0; padding: 0; height: 1px; margin: 12px 10px !important; background: rgba(255, 255, 255, .09); }
-    .app.collapsed .nav button { justify-content: center; padding: 11px 0; position: relative; }
-    .app.collapsed .nav button::after { content: attr(data-tip); position: absolute; left: calc(100% + 14px); top: 50%; transform: translate(-4px, -50%); white-space: nowrap;
-      background: var(--ink); color: var(--bg); font: 600 12.5px var(--font); padding: 6px 10px; border-radius: 8px; box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; z-index: 50; }
-    .app.collapsed .nav button:hover::after { opacity: 1; transform: translate(0, -50%); }
-    .app.collapsed .me { flex-direction: column; gap: 6px; padding: 8px 0; }
-    .app.collapsed .me button { margin: 0; }
+    .app.collapsed .brand { justify-content: center; padding: 2px 0 16px; }
+    .app.collapsed .brand-text, .app.collapsed .nav .lbl, .app.collapsed .me .who, .app.collapsed .env-row:not(:first-child), .app.collapsed .env-row b { display: none; }
+    .app.collapsed .nav { margin: 0 -4px; padding: 8px 4px 14px; }
+    .app.collapsed .nav-label { font-size: 0; padding: 0; height: 1px; margin: 10px 8px; background: rgba(255, 255, 255, .09); opacity: 1; }
+    .app.collapsed .nav button { justify-content: center; padding: 0; }
+    .app.collapsed .nav button.active::before { top: 10px; bottom: 10px; }
+    .app.collapsed .env { justify-content: center; padding: 9px 0; }
+    .app.collapsed .me { flex-direction: column; gap: 4px; padding: 4px 0 0; }
+    .app.collapsed .me-actions { flex-direction: column; }
   }
   @media (max-width: 900px) { .collapse-btn { display: none; } }
-  .nav .lbl { white-space: nowrap; overflow: hidden; }
-  .app:not(.collapsed) .nav button, .app:not(.collapsed) .side-foot { overflow: hidden; }
-  /* Status details live on Home; the sidebar keeps one line, and the menu scrolls on short screens. */
-  .env .env-row:nth-child(n+3) { display: none; }
-  .env { padding: 9px 12px; }
-  .env-row { margin-top: 4px; }
-  .nav { flex: 1 1 auto; min-height: 0; }
-  .app:not(.collapsed) .nav { overflow-y: auto; scrollbar-width: thin; }
-  .side-foot { margin-top: 12px; }
 
   /* rules page */
   .rules-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: center; padding: 34px 36px; margin-bottom: 22px;
@@ -549,9 +559,6 @@
   .lbl-row code { font: 12px var(--mono); color: var(--ink-2); }
 
   /* platform: projects */
-  .proj-switch { position: relative; margin: -8px 0 16px; }
-  .proj-btn { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .09); background: rgba(255, 255, 255, .05); color: var(--side-ink); cursor: pointer; font: inherit; text-align: left; }
-  .proj-btn:hover { background: rgba(255, 255, 255, .09); }
   .proj-btn > svg.i { margin-left: auto; width: 14px; height: 14px; color: var(--side-muted); flex: none; }
   .proj-text { min-width: 0; } .proj-text b { display: block; color: #fff; font-size: 13.5px; } .proj-text small { display: block; color: var(--side-muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .proj-badge { flex: none; width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font: 800 13px var(--font); color: #fff; background: var(--c); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .15); }
@@ -798,6 +805,89 @@
 .swatch.custom input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;border:0;padding:0}
 .swatch-preview{display:flex;align-items:center;gap:8px;margin-left:4px;font-size:12.5px;color:var(--muted)}
 .swatch-preview .proj-badge{width:26px;height:26px}
+
+/* ---------- home (project overview) ---------- */
+.hm-hero { position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; padding: 26px 28px; margin-bottom: 18px; border-radius: 20px;
+           background: radial-gradient(120% 160% at 0% 0%, color-mix(in srgb, var(--pc, #0e7490) 22%, transparent), transparent 55%), var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.hm-hero::after { content: ""; position: absolute; right: -80px; top: -120px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--pc, #0e7490) 14%, transparent), transparent 70%); pointer-events: none; }
+.hm-hero-text { position: relative; z-index: 1; min-width: 0; }
+.hm-kicker { display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+.hm-kicker .proj-badge { width: 22px; height: 22px; border-radius: 7px; font-size: 11px; }
+.hm-kicker .sep { color: var(--muted); font-weight: 400; }
+.hm-hero h1 { margin: 12px 0 4px; font-size: 27px; letter-spacing: -.025em; }
+.hm-hero p { margin: 0; color: var(--muted); font-size: 14px; }
+.hm-hero p b { color: var(--ink-2); font-weight: 600; }
+.hm-actions { position: relative; z-index: 1; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.hm-top { display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); gap: 18px; margin-bottom: 18px; }
+@media (max-width: 1100px) { .hm-top { grid-template-columns: 1fr; } }
+.hm-score { height: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px 18px; align-items: center; padding: 20px; }
+.hm-score .hm-parts { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; padding-top: 14px; border-top: 1px solid var(--line-2); }
+.hm-ring { position: relative; width: 104px; height: 104px; flex: none; }
+.hm-ring svg { width: 104px; height: 104px; transform: rotate(-90deg); }
+.hm-ring circle { fill: none; stroke-width: 10; }
+.hm-ring .track { stroke: var(--line-2); }
+.hm-ring .bar { stroke: var(--rc, var(--brand)); stroke-linecap: round; transition: stroke-dashoffset .8s ease; }
+.hm-ring .val { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+.hm-ring .val b { font-size: 26px; letter-spacing: -.03em; line-height: 1; }
+.hm-ring .val small { display: block; font-size: 10.5px; color: var(--muted); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; margin-top: 3px; }
+.hm-score-text { min-width: 0; flex: 1; }
+.hm-score-text h3 { margin: 0 0 4px; font-size: 17px; letter-spacing: -.01em; }
+.hm-score-text > p { margin: 0; font-size: 12.5px; color: var(--muted); }
+.hm-parts { display: flex; flex-direction: column; gap: 6px; }
+.hm-part { display: grid; grid-template-columns: 1fr 34px; gap: 2px 8px; align-items: center; font-size: 12px; color: var(--ink-2); }
+.hm-part span:last-child { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hm-part i { grid-column: 1 / -1; display: block; height: 4px; border-radius: 4px; background: var(--line-2); overflow: hidden; }
+.hm-part i::before { content: ""; display: block; height: 100%; width: var(--w); background: var(--pcol, var(--brand)); border-radius: 4px; }
+.hm-part.na { color: var(--muted); }
+
+.hm-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 600px) { .hm-kpis { grid-template-columns: 1fr; } }
+.hm-kpi { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; text-align: left; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow); cursor: pointer; font: inherit; color: inherit; min-width: 0; transition: transform .15s, box-shadow .15s, border-color .15s; }
+.hm-kpi:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: color-mix(in srgb, var(--kc) 40%, var(--line)); }
+.hm-kpi:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.hm-kpi .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.hm-kpi .k { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.hm-kpi .ic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: var(--kc); background: color-mix(in srgb, var(--kc) 13%, transparent); }
+.hm-kpi .ic svg.i { width: 16px; height: 16px; }
+.hm-kpi .v { font-size: 26px; font-weight: 700; letter-spacing: -.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.hm-kpi .v small { font-size: 14px; color: var(--muted); font-weight: 600; letter-spacing: 0; }
+.hm-kpi .s { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hm-kpi .s .bad { color: var(--bad); font-weight: 600; } .hm-kpi .s .good { color: var(--good); font-weight: 600; }
+.hm-meter { height: 5px; border-radius: 5px; background: var(--line-2); overflow: hidden; display: flex; margin-top: 2px; }
+.hm-meter span { height: 100%; }
+
+.hm-att { display: flex; flex-direction: column; }
+.hm-att-item { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-top: 1px solid var(--line-2); min-width: 0; }
+.hm-att-item .ic { width: 34px; height: 34px; border-radius: 10px; flex: none; display: grid; place-items: center; }
+.hm-att-item .ic svg.i { width: 17px; height: 17px; }
+.hm-att-item.bad .ic { background: var(--bad-bg); color: var(--bad); }
+.hm-att-item.warn .ic { background: var(--warn-bg); color: var(--warn); }
+.hm-att-item.info .ic { background: var(--info-bg); color: var(--info); }
+.hm-att-item b { display: block; font-size: 13.5px; }
+.hm-att-item small { display: block; color: var(--muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#view-home .stack > div:empty { display: none; }
+.hm-link { color: var(--brand); font-weight: 600; text-decoration: none; } .hm-link:hover { text-decoration: underline; }
+.hm-clear { display: flex; align-items: center; gap: 14px; padding: 18px; border-top: 1px solid var(--line-2); }
+.hm-clear .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--good-bg); color: var(--good); flex: none; }
+
+.hm-setup-bar { height: 6px; margin: 0 18px 6px; border-radius: 6px; background: var(--line-2); overflow: hidden; }
+.hm-setup-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--brand), var(--brand-2)); border-radius: 6px; }
+.hm-step { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 18px; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; min-width: 0; }
+.hm-step:hover { background: var(--surface-2); }
+.hm-step:disabled { cursor: default; } .hm-step:disabled:hover { background: none; }
+.hm-step .ck { width: 22px; height: 22px; border-radius: 50%; flex: none; display: grid; place-items: center; border: 2px solid var(--line); color: transparent; }
+.hm-step .ck svg.i { width: 13px; height: 13px; stroke-width: 3; }
+.hm-step.done .ck { background: var(--good); border-color: var(--good); color: #fff; }
+.hm-step.done b { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); font-weight: 500; }
+.hm-step b { display: block; font-size: 13.5px; } .hm-step small { display: block; font-size: 12px; color: var(--muted); }
+.hm-step > svg.i:last-child { margin-left: auto; width: 15px; height: 15px; color: var(--muted); }
+
+.hm-sinque .health { grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 18px 18px; margin: 0; }
+.hm-sinque .health-tile { box-shadow: none; background: var(--surface-2); padding: 12px; }
+@media (max-width: 600px) { .hm-sinque .health { grid-template-columns: 1fr; } .hm-hero { padding: 20px; } .hm-score { flex-direction: column; align-items: flex-start; } }
+.hm-sk { border-radius: var(--radius); background: linear-gradient(90deg, var(--line-2), var(--surface-2), var(--line-2)); background-size: 200% 100%; animation: hmsk 1.2s infinite linear; }
+@keyframes hmsk { to { background-position: -200% 0; } }
 </style>
 <script>try { const t = localStorage.getItem("qa-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch { /* storage off */ }</script>
 </head>
@@ -809,76 +899,92 @@
     <div class="brand"><div class="logo" style="font-size:14px;letter-spacing:-.02em">eF</div><div class="brand-text"><b>eFutures QA</b><span>Test platform</span></div></div>
     <div class="proj-switch"><button class="proj-btn" id="projBtn"><span class="proj-badge" style="--c:#0e7490">S</span><span class="proj-text"><b>Sinque</b><small>Loading…</small></span></button><div class="proj-menu hidden" id="projMenu"></div></div>
     <button class="collapse-btn" id="collapseBtn" title="Collapse sidebar  [" aria-expanded="true"><svg class="i"><use href="#i-chev"/></svg></button>
-    <div class="nav-label">Workspace</div>
     <nav class="nav" id="nav">
       <button data-view="home" data-tip="Home" class="active"><svg class="i"><use href="#i-home"/></svg><span class="lbl">Home</span></button>
+
+      <div class="nav-label">Testing</div>
+      <button data-view="cases" data-tip="Test cases"><svg class="i"><use href="#i-list"/></svg><span class="lbl">Test cases</span></button>
+      <button data-view="runs" data-tip="Test runs"><svg class="i"><use href="#i-play"/></svg><span class="lbl">Test runs</span></button>
+      <button data-view="apichecks" data-tip="API checks"><svg class="i"><use href="#i-cloud"/></svg><span class="lbl">API checks</span></button>
+      <button data-view="jira" data-tip="Jira tickets"><svg class="i"><use href="#i-ticket"/></svg><span class="lbl">Jira tickets</span></button>
+      <button data-view="coverage" data-tip="Sprint coverage"><svg class="i"><use href="#i-chart"/></svg><span class="lbl">Sprint coverage</span></button>
+
+      <div class="nav-label" data-pack="sinque">Sinque tools</div>
       <button data-pack="sinque" data-view="users" data-tip="Users"><svg class="i"><use href="#i-users"/></svg><span class="lbl">Users</span></button>
       <button data-pack="sinque" data-view="scenario" data-tip="Create scenario"><svg class="i"><use href="#i-flask"/></svg><span class="lbl">Create scenario</span></button>
       <button data-pack="sinque" data-view="groups" data-tip="Groups"><svg class="i"><use href="#i-layers"/></svg><span class="lbl">Groups</span></button>
       <button data-pack="sinque" data-view="pros" data-tip="Professionals"><svg class="i"><use href="#i-briefcase"/></svg><span class="lbl">Professionals</span></button>
-      <div class="nav-label" style="margin-top:16px">Testing</div>
-      <button data-view="cases" data-tip="Test cases"><svg class="i"><use href="#i-list"/></svg><span class="lbl">Test cases</span></button>
-      <button data-view="runs" data-tip="Test runs"><svg class="i"><use href="#i-check"/></svg><span class="lbl">Test runs</span></button>
-      <button data-view="apichecks" data-tip="API checks"><svg class="i"><use href="#i-cloud"/></svg><span class="lbl">API checks</span></button>
-      <button data-view="jira" data-tip="Jira tickets"><svg class="i"><use href="#i-ticket"/></svg><span class="lbl">Jira tickets</span></button>
-      <button data-view="coverage" data-tip="Sprint coverage"><svg class="i"><use href="#i-chart"/></svg><span class="lbl">Sprint coverage</span></button>
-      <button data-pack="sinque" data-view="presets" data-tip="Run all presets"><svg class="i"><use href="#i-check"/></svg><span class="lbl">Run all presets</span></button>
-      <button data-pack="sinque" data-view="rules" data-tip="Rules explained"><svg class="i"><use href="#i-book"/></svg><span class="lbl">Rules explained</span></button>
+      <button data-pack="sinque" data-view="presets" data-tip="Run all presets"><svg class="i"><use href="#i-check-all"/></svg><span class="lbl">Run all presets</span></button>
       <button data-pack="sinque" data-view="checker" data-tip="Report checker"><svg class="i"><use href="#i-shield"/></svg><span class="lbl">Report checker</span></button>
+      <button data-pack="sinque" data-view="rules" data-tip="Rules explained"><svg class="i"><use href="#i-book"/></svg><span class="lbl">Rules explained</span></button>
       <button data-pack="sinque" data-view="plan" data-tip="Test plan"><svg class="i"><use href="#i-sparkle"/></svg><span class="lbl">Test plan</span></button>
-      
-      <div class="nav-label" style="margin-top:16px">Team</div>
-      <button data-view="audit" data-tip="Audit log"><svg class="i"><use href="#i-list"/></svg><span class="lbl">Audit log</span></button>
       <button data-pack="sinque" data-view="cleanup" data-tip="Test data"><svg class="i"><use href="#i-broom"/></svg><span class="lbl">Test data</span></button>
-      <button data-view="team" data-tip="Testers" id="navTeam" class="hidden"><svg class="i"><use href="#i-users"/></svg><span class="lbl">Testers</span></button>
-      <button data-view="projects" id="navProjects" class="hidden" data-tip="Projects"><svg class="i"><use href="#i-layers"/></svg><span class="lbl">Projects</span></button>
+
+      <div class="nav-label">Team</div>
+      <button data-view="team" data-tip="Testers" id="navTeam" class="hidden"><svg class="i"><use href="#i-user-check"/></svg><span class="lbl">Testers</span></button>
+      <button data-view="projects" id="navProjects" class="hidden" data-tip="Projects"><svg class="i"><use href="#i-folder"/></svg><span class="lbl">Projects</span></button>
+      <button data-view="audit" data-tip="Audit log"><svg class="i"><use href="#i-history"/></svg><span class="lbl">Audit log</span></button>
       <button data-view="settings" data-tip="Settings"><svg class="i"><use href="#i-sliders"/></svg><span class="lbl">Settings</span></button>
     </nav>
     <div class="side-foot">
-      <div class="env">
-        <div class="env-row"><span class="dot" id="envDot"></span><b id="envState" style="color:#fff">Connecting…</b></div>
-        <div class="env-row"><svg class="i" style="width:14px;height:14px"><use href="#i-db"/></svg><span id="dbName">—</span></div>
-        <div class="env-row"><svg class="i" style="width:14px;height:14px"><use href="#i-cloud"/></svg><span id="apiName">—</span></div>
-        <div class="env-row"><svg class="i" style="width:14px;height:14px"><use href="#i-sparkle"/></svg><span id="aiName">AI —</span></div>
+      <div class="env" title="Environment status. Details are on Home.">
+        <div class="env-row"><span class="dot" id="envDot"></span><b id="envState">Connecting…</b></div>
+        <div class="env-row"><span id="dbName">—</span></div>
+        <div class="env-row"><span id="apiName">—</span></div>
+        <div class="env-row"><span id="aiName">AI —</span></div>
       </div>
-      <div class="theme-row">
+      <div class="theme-row hidden">
         <div class="theme-seg" id="themeSeg" role="group" aria-label="Theme">
           <button data-theme="system" title="Follow the system"><svg class="i"><use href="#i-monitor"/></svg><span>Auto</span></button>
           <button data-theme="light" title="Light"><svg class="i"><use href="#i-sun"/></svg><span>Light</span></button>
           <button data-theme="dark" title="Dark"><svg class="i"><use href="#i-moon"/></svg><span>Dark</span></button>
         </div>
-        <button class="theme-cycle" id="themeCycle" title="Theme"></button>
       </div>
       <div class="me"><div class="avatar" id="meAvatar" style="background:#1f6f7f">?</div><div class="who" id="meWho" title="Change your password"><b id="meName">—</b><small id="meRole">Signed in</small></div>
-        <button id="jiraMeBtn" title="Your Jira connection" class="jira-me"><svg class="i"><use href="#i-ticket"/></svg><span class="jira-dot"></span></button>
-        <button id="logoutBtn" title="Sign out" style="margin-left:0"><svg class="i"><use href="#i-logout"/></svg></button></div>
+        <div class="me-actions">
+          <button id="jiraMeBtn" title="Your Jira connection" class="jira-me"><svg class="i"><use href="#i-ticket"/></svg><span class="jira-dot"></span></button>
+          <button class="theme-cycle" id="themeCycle" title="Theme"></button>
+          <button id="logoutBtn" title="Sign out"><svg class="i"><use href="#i-logout"/></svg></button>
+        </div>
+      </div>
     </div>
   </aside>
 
   <main>
-    <div id="envBanner"></div>
+    <div id="envBanner" data-pack="sinque"></div>
 
     <!-- USERS -->
     <!-- HOME -->
     <section id="view-home" class="hidden">
-      <div class="home-head">
-        <div><h1 id="homeHello">Welcome</h1><p id="homeDate" class="muted"></p></div>
-        <div class="row" style="gap:8px">
-          <button class="btn btn-ghost" data-goto="scenario"><svg class="i"><use href="#i-flask"/></svg>Create scenario</button>
-          <button class="btn btn-ghost" data-goto="checker"><svg class="i"><use href="#i-shield"/></svg>Report checker</button>
-          <button class="btn btn-primary" data-goto="presets"><svg class="i"><use href="#i-check"/></svg>Run all presets</button>
+      <div class="hm-hero">
+        <div class="hm-hero-text">
+          <div class="hm-kicker" id="homeKicker"></div>
+          <h1 id="homeHello">Welcome</h1>
+          <p id="homeDate"></p>
         </div>
+        <div class="hm-actions" id="homeActions"></div>
       </div>
-      <div class="health" id="homeHealth"></div>
+
+      <div class="hm-top">
+        <div id="homeScore"></div>
+        <div class="hm-kpis" id="homeKpis"></div>
+      </div>
+
       <div class="home-grid">
         <div class="stack" style="min-width:0">
+          <div id="homeAttention"></div>
+          <div id="homeRunsCard"></div>
           <div id="homeHealthCard"></div>
-          <div id="homeRuns" data-pack="sinque"></div>
-          <div id="homeJira"></div>
         </div>
         <div class="stack" style="min-width:0">
-          <div id="homeRunsCard"></div>
-          <div id="homeCounts"></div>
+          <div id="homeSetup"></div>
+          <div class="card hm-sinque" data-pack="sinque">
+            <div class="card-head"><div><h2>Sinque DEV</h2><p id="homeWeek">Data tools and report checks</p></div></div>
+            <div class="health" id="homeHealth"></div>
+          </div>
+          <div id="homeRuns" data-pack="sinque"></div>
+          <div id="homeCounts" data-pack="sinque"></div>
+          <div id="homeJira"></div>
           <div id="homeActivity"></div>
         </div>
       </div>
@@ -1372,6 +1478,11 @@
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-check-all" viewBox="0 0 24 24"><path d="M18 6 7 17l-5-5M22 10l-7.5 7.5L13 16"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m10 8.5 5.5 3.5-5.5 3.5z"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-user-check" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M16 11l2 2 4-4"/></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></symbol>
   <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></symbol>
   <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.7-9h1.8a4.5 4.5 0 1 1 0 9Z"/></symbol>
@@ -1458,6 +1569,9 @@ const AVATAR = ["#0e7490", "#7c3aed", "#db2777", "#ea580c", "#059669", "#2563eb"
 const avatarColor = s => AVATAR[[...String(s)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % AVATAR.length];
 const avatar = (seed, a, b, cls = "") => `<div class="avatar ${cls}" style="background:${avatarColor(seed)}">${esc(initials(a, b))}</div>`;
 const chip = (text, tone = "", plain = false) => `<span class="chip ${tone ? "c-" + tone : ""} ${plain ? "plain" : ""}">${esc(text)}</span>`;
+const isNotSetUp = e => /isn't set up yet/.test(e?.message || e?.error || "");
+const notSetUpCard = (bare = false) => `<div class="${bare ? "" : "card"}">${empty("db", "Sinque isn't connected yet", ME.role === "admin" ? "Add the DEV database and API address under Settings → Sinque database and Sinque app. Test cases, runs and API checks work without it." : "An admin needs to add the Sinque DEV database on the Settings page. Test cases, runs and API checks work without it.")}${ME.role === "admin" ? `<div style="text-align:center;margin:-28px 0 28px"><button class="btn btn-primary btn-sm" data-open-settings>Open Settings</button></div>` : ""}</div>`;
+document.addEventListener("click", e => { if (e.target.closest("[data-open-settings]")) show("settings"); });
 const empty = (ic, title, text) => `<div class="empty"><div class="ring">${icon(ic)}</div><b>${esc(title)}</b>${esc(text)}</div>`;
 const skeletonRows = (n = 5) => `<div class="card-pad stack" style="gap:14px">${Array.from({ length: n }, (_, i) => `<div class="skel" style="width:${90 - i * 9}%"></div>`).join("")}</div>`;
 
@@ -1549,7 +1663,7 @@ const search = async () => {
     if (seq !== searchSeq) return;
     $("aiSearchNote").innerHTML = "";
     renderUserRows(rows);
-  } catch (e) { $("results").innerHTML = ""; toast(e.message, "bad"); }
+  } catch (e) { $("results").innerHTML = isNotSetUp(e) ? notSetUpCard(true) : ""; if (!isNotSetUp(e)) toast(e.message, "bad"); }
 };
 let searchTimer;
 $("q").oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(search, 300); };
@@ -3129,11 +3243,13 @@ const renderHealth = () => {
   const env = INFO.environment || {};
   $("homeHealth").innerHTML = [
     INFO.db_name
-      ? healthTile("db", "Database", INFO.db_name, env.ok !== false, env.ok === false ? (env.not_set ? "Sinque API not set" : "Doesn't match the API") : "DEV · connected")
+      ? healthTile("db", "Database", INFO.db_name, env.not_set ? null : env.ok !== false, env.not_set ? "Set · waiting for the API address" : env.ok === false ? "Doesn't match the API" : "DEV · connected")
       : healthTile("db", "Database", "Not set", null, "Add it under Settings → Sinque database"),
-    healthTile("cloud", "Dev API", INFO.api_base_url ? INFO.api_base_url.replace(/^https?:\/\//, "") : "Not set", INFO.api_base_url ? env.ok !== false : false, env.ok === false ? env.message || "Check settings" : "Answering"),
-    healthTile("sparkle", "AI", INFO.ai_enabled ? "Gemini" : "Off", INFO.ai_enabled ? true : null, INFO.ai_enabled ? "Explain, test cases, search" : "Add GEMINI_API_KEY"),
-    healthTile("ticket", "Jira", INFO.jira_enabled ? `Project ${INFO.jira_project}` : "Off", INFO.jira_enabled ? true : null, INFO.jira_enabled ? "Tickets and test cases" : "Add JIRA_EMAIL and token"),
+    !INFO.api_base_url
+      ? healthTile("cloud", "Dev API", "Not set", null, "Add it under Settings → Sinque app")
+      : env.not_set
+        ? healthTile("cloud", "Dev API", INFO.api_base_url.replace(/^https?:\/\//, ""), null, "Checked once the database is set")
+        : healthTile("cloud", "Dev API", INFO.api_base_url.replace(/^https?:\/\//, ""), env.ok !== false, env.ok === false ? env.message || "Check settings" : "Answering"),
   ].join("");
 };
 
@@ -3153,24 +3269,137 @@ const describeEntry = e => {
 const ACTION_ICON = [[/jira|ticket|test case/, "ticket"], [/preset/, "check"], [/measurement/, "scale"], [/delete|remove/, "trash"], [/tester|password/, "key"], [/AI|scan/i, "sparkle"], [/group|overview/, "layers"], [/user/, "user"]];
 const actionIcon = a => (ACTION_ICON.find(([re]) => re.test(a)) || [, "list"])[1];
 
+// ---------- Home: one overview per project ----------
+const rateTone = v => (v == null ? "" : v >= 90 ? "good" : v >= 70 ? "warn" : "bad");
+const rateColor = v => toneColor(rateTone(v)) || "var(--muted)";
+
+const homeActions = () => {
+  const btn = (view, ic, label, primary) => `<button class="btn ${primary ? "btn-primary" : "btn-ghost"}" data-hm-go="${view}">${icon(ic)}${label}</button>`;
+  $("homeActions").innerHTML = isSinque()
+    ? btn("scenario", "flask", "Create scenario") + btn("checker", "shield", "Report checker") + btn("presets", "check-all", "Run all presets", true)
+    : btn("cases", "list", "Test cases") + btn("apichecks", "cloud", "API checks") + btn("new-run", "play", "New test run", true);
+};
+
+const scoreCard = o => {
+  const s = o.readiness.score, C = 2 * Math.PI * 44;
+  const verdict = s == null ? "No results yet" : s >= 90 ? "Looking good" : s >= 70 ? "A few things to check" : "Needs work before release";
+  return `<div class="card hm-score" style="--rc:${rateColor(s)}">
+    <div class="hm-ring" role="img" aria-label="Readiness ${s ?? "unknown"}">
+      <svg viewBox="0 0 104 104"><circle class="track" cx="52" cy="52" r="44"/><circle class="bar" cx="52" cy="52" r="44" stroke-dasharray="${C}" stroke-dashoffset="${s == null ? C : C * (1 - s / 100)}"/></svg>
+      <div class="val"><div><b>${s == null ? "—" : `${s}%`}</b><small>Ready</small></div></div>
+    </div>
+    <div class="hm-score-text"><h3>${verdict}</h3><p>${s == null ? "Run tests or API checks to see a score." : "Release readiness: the average of the results below."}</p></div>
+      <div class="hm-parts">${o.readiness.parts.map(p => `<div class="hm-part ${p.value == null ? "na" : ""}" style="--w:${p.value ?? 0}%;--pcol:${rateColor(p.value)}"><span>${esc(p.label)}</span><span>${p.value == null ? "—" : `${p.value}%`}</span><i></i></div>`).join("")}</div>
+    </div>`;
+};
+
+const kpiTile = ({ view, ic, color, label, value, sub, meter }) => `<button class="hm-kpi" data-hm-go="${view}" style="--kc:${color}">
+    <div class="top"><span class="k">${label}</span><span class="ic">${icon(ic)}</span></div>
+    <div class="v">${value}</div>
+    ${meter ? `<div class="hm-meter">${meter}</div>` : ""}
+    <div class="s">${sub}</div></button>`;
+const seg = (n, total, color) => (total && n ? `<span style="width:${(n / total) * 100}%;background:${color}"></span>` : "");
+
+const kpiTiles = o => {
+  const c = o.cases, r = o.runs, a = o.api, u = o.ui, lr = r.last_closed || r.open[0];
+  return [
+    kpiTile({ view: "cases", ic: "list", color: "#0e7490", label: "Test cases", value: c.total.toLocaleString(),
+      meter: c.total ? seg(c.automated, c.total, "#10b981") : "",
+      sub: c.total ? `${c.automated} automated · ${c.suites} suite${c.suites === 1 ? "" : "s"}` : "None yet: write or import some" }),
+    kpiTile({ view: "runs", ic: "play", color: "#7c3aed", label: r.last_closed ? "Last test run" : "Test runs",
+      value: lr && lr.pass_rate != null ? `${lr.pass_rate}<small>%</small>` : r.open_count ? `${r.open_count}<small> open</small>` : "—",
+      meter: lr ? seg(lr.counts.passed, lr.total, "#10b981") + seg(lr.counts.failed, lr.total, "#ef4444") + seg(lr.counts.blocked, lr.total, "#f59e0b") : "",
+      sub: lr ? `${esc(lr.name)} · ${lr.tested}/${lr.total} tested` : "Start a run to track a release" }),
+    kpiTile({ view: "apichecks", ic: "cloud", color: "#2563eb", label: "API checks", value: a.total ? `${a.passing}<small>/${a.ran || a.total}</small>` : "—",
+      meter: a.ran ? seg(a.passing, a.ran, "#10b981") + seg(a.failing, a.ran, "#ef4444") : "",
+      sub: !a.total ? "Import Postman or OpenAPI" : a.failing ? `<span class="bad">${a.failing} failing</span> · ${a.last_at ? ago(a.last_at) : "not run"}` : a.ran ? `<span class="good">All passing</span> · ${ago(a.last_at)}` : "Not run yet" }),
+    kpiTile({ view: "cases", ic: "sparkle", color: "#db2777", label: "UI automation", value: u.cases ? `${u.passing}<small>/${u.cases}</small>` : c.automated ? "0" : "—",
+      meter: u.cases ? seg(u.passing, u.cases, "#10b981") + seg(u.failing, u.cases, "#ef4444") : "",
+      sub: u.cases ? (u.failing ? `<span class="bad">${u.failing} failing</span> · ${ago(u.last_at)}` : `<span class="good">All passing</span> · ${ago(u.last_at)}`) : c.automated ? "Automated, not run yet" : "Automate a test case" }),
+  ].join("");
+};
+
+const attentionCard = o => `<div class="card"><div class="card-head"><div><h2>Needs attention ${o.attention.length ? `<span class="chip c-${o.attention[0].tone === "bad" ? "bad" : "warn"}">${o.attention.length}</span>` : ""}</h2><p>Worked out from runs, checks, automation and health.</p></div></div>
+  ${o.attention.length ? `<div class="hm-att">${o.attention.map((a, i) => `<div class="hm-att-item ${a.tone}">
+      <span class="ic">${icon(a.icon)}</span>
+      <div style="min-width:0;flex:1"><b>${esc(a.title)}</b><small>${esc(a.detail || "")}</small></div>
+      ${a.action ? `<button class="btn btn-ghost btn-sm" data-hm-att="${i}">${esc(a.action)}</button>` : ""}</div>`).join("")}</div>`
+    : o.cases.total || o.api.total || o.runs.total
+      ? `<div class="hm-clear"><span class="ic">${icon("check")}</span><div><b>All clear</b><div class="muted" style="font-size:13px">Nothing is failing or overdue in ${esc(o.project.name)}.</div></div></div>`
+      : `<div class="hm-clear"><span class="ic" style="background:var(--neutral-bg);color:var(--muted)">${icon("info")}</span><div><b>Nothing to watch yet</b><div class="muted" style="font-size:13px">Once ${esc(o.project.name)} has tests, failures and overdue work show up here.</div></div></div>`}</div>`;
+
+const setupCard = o => {
+  const done = o.setup.filter(s => s.done).length;
+  if (done === o.setup.length) return "";
+  const admin = ME.role === "admin";
+  return `<div class="card"><div class="card-head"><div><h2>Get ${esc(o.project.name)} ready</h2><p>${done} of ${o.setup.length} done</p></div></div>
+    <div class="hm-setup-bar"><span style="width:${(done / o.setup.length) * 100}%"></span></div>
+    <div style="padding-bottom:8px">${o.setup.map(s => {
+      const locked = !s.done && s.admin && !admin;
+      return `<button class="hm-step ${s.done ? "done" : ""}" ${s.done || locked ? "disabled" : `data-hm-go="${s.view}"`}>
+        <span class="ck">${icon("check")}</span><div style="min-width:0"><b>${esc(s.label)}</b><small>${locked ? "Ask an admin" : esc(s.hint)}</small></div>${s.done || locked ? "" : icon("chev", "transform:rotate(180deg)")}</button>`;
+    }).join("")}</div></div>`;
+};
+
+const openRunsCard = o => {
+  const r = o.runs;
+  return `<div class="card"><div class="card-head"><div><h2>Test runs in progress <span class="chip plain">${r.open_count}</span></h2><p>${r.total} run${r.total === 1 ? "" : "s"} in ${esc(o.project.name)}</p></div>
+      <button class="btn btn-ghost btn-sm" data-hm-go="runs">All runs ${icon("back", "transform:rotate(180deg)")}</button></div>
+    ${r.open.length ? `<div class="home-list">${r.open.map(x => `<div class="home-row click" data-run="${esc(x.id)}">
+        <div style="min-width:0;flex:1"><b class="ellipsis">${esc(x.name)}</b><small class="muted">${esc(x.release || "No release")} · ${esc(x.environment || "—")} · ${ago(x.created_at)}</small></div>
+        <div style="width:160px">${runBar(x)}<small class="muted">${x.tested}/${x.total} tested · ${x.counts.failed} failed</small></div></div>`).join("")}</div>`
+      : `<div class="card-pad muted" style="font-size:13.5px">No open runs. <a href="#" class="hm-link" data-hm-go="new-run">Start one</a> for the next release.</div>`}</div>`;
+};
+
+const homeGo = view => {
+  if (view === "new-run") { show("runs"); newRunDialog(); }
+  else if (view === "jira-me") $("jiraMeBtn").click();
+  else show(view);
+};
+
+let HOME = null;
 const loadHome = async () => {
   const hour = new Date().getHours();
   $("homeHello").textContent = `${hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"}${ME.user ? `, ${ME.user}` : ""}`;
-  $("homeDate").textContent = `${new Date().toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" })} · reports cover the week of ${fmtDate(lastMondayUtc())}`;
-  renderHealth();
-  if (!$("homeRuns").innerHTML) ["homeRuns", "homeJira", "homeCounts", "homeActivity"].forEach(id => $(id).innerHTML = `<div class="card">${skeletonRows(4)}</div>`);
-  loadProjectHome().catch(() => {});
-  if (!isSinque()) {
-    $("homeDate").textContent = new Date().toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" });
-    renderActivity_(await api("/api/audit?limit=12").catch(e => ({ error: e.message })));
-    return;
+  const p = PROJECT || { name: "Sinque", color: "#0e7490", environments: [] };
+  $("view-home").style.setProperty("--pc", p.color || "#0e7490");
+  const env = (p.environments || [])[0];
+  $("homeKicker").innerHTML = `<span class="proj-badge" style="--c:${esc(p.color || "#0e7490")}">${esc((p.name || "?")[0])}</span>${esc(p.name)}${env ? `<span class="sep">·</span>${esc(env.name)}` : ""}`;
+  homeActions();
+  if (!HOME || HOME.project.key !== p.key) {
+    $("homeScore").innerHTML = `<div class="hm-sk" style="height:150px"></div>`;
+    $("homeKpis").innerHTML = `<div class="hm-sk" style="height:118px"></div>`.repeat(4);
+    ["homeAttention", "homeRunsCard"].forEach(id => $(id).innerHTML = `<div class="card">${skeletonRows(3)}</div>`);
   }
-  const d = await api("/api/home");
-  renderRuns(d.preset_runs);
-  renderHomeJira(d.jira);
-  renderCounts(d.counts);
-  renderActivity_(d.activity);
+  const o = HOME = await api("/api/overview");
+  const n = o.attention.length, today = new Date().toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" });
+  $("homeDate").innerHTML = `${esc(today)} · ${n ? `<b>${n} thing${n === 1 ? "" : "s"} need${n === 1 ? "s" : ""} attention</b>` : o.cases.total || o.api.total ? "<b>all clear</b>" : "let's get this project set up"}`;
+  $("homeScore").innerHTML = scoreCard(o);
+  $("homeKpis").innerHTML = kpiTiles(o);
+  $("homeAttention").innerHTML = attentionCard(o);
+  $("homeSetup").innerHTML = setupCard(o);
+  $("homeRunsCard").innerHTML = openRunsCard(o);
+  $("homeHealthCard").innerHTML = healthCard(o.health);
+  renderActivity_({ entries: o.activity }, `Changes in ${o.project.name}, by everyone.`);
+  $$("#view-home [data-hm-go]").forEach(b => b.onclick = e => { e.preventDefault(); homeGo(b.dataset.hmGo); });
+  $$("#homeAttention [data-hm-att]").forEach(b => b.onclick = () => { const a = o.attention[+b.dataset.hmAtt]; a.run ? openRun(a.run) : homeGo(a.view); });
+  $$("#homeRunsCard [data-run]").forEach(r => r.onclick = () => openRun(r.dataset.run));
+  $$("#homeHealthCard [data-goto-btn]").forEach(b => b.onclick = () => show(b.dataset.gotoBtn));
+  if ($("healthNow")) $("healthNow").onclick = () => busy($("healthNow"), async () => { await post("/api/health/check"); await loadHome(); });
+
+  if (isSinque()) {
+    renderHealth();
+    $("homeWeek").textContent = `Reports cover the week of ${fmtDate(lastMondayUtc())}`;
+    const d = await api("/api/home").catch(e => ({ counts: { error: e.message }, preset_runs: [], jira: null }));
+    renderRuns(d.preset_runs);
+    renderHomeJira(d.jira);
+    renderCounts(d.counts);
+  } else {
+    const tickets = o.project.jira_project && INFO.jira_enabled ? await api("/api/jira/tickets?scope=all&status=open").catch(e => ({ error: e.message })) : null;
+    renderHomeJira(tickets ? { ...tickets, tickets: tickets.tickets || [] } : null);
+  }
 };
+const loadProjectHome = () => loadHome();
 
 // Monday 00:00 UTC of the last completed week.
 const lastMondayUtc = () => {
@@ -3234,7 +3463,7 @@ const renderHomeJira = jira => {
 };
 
 const renderCounts = c => {
-  if (c?.error) { $("homeCounts").innerHTML = `<div class="card"><div class="card-pad muted">${esc(c.error)}</div></div>`; return; }
+  if (c?.error) { $("homeCounts").innerHTML = isNotSetUp(c) ? "" : `<div class="card"><div class="card-pad muted">${esc(c.error)}</div></div>`; return; }
   const tile = (ic, label, n, sub, view) => `<button class="count-tile" ${view ? `data-goto-btn="${view}"` : "disabled"}><span class="count-icon">${icon(ic)}</span><b>${n.toLocaleString()}</b><span>${label}</span><small>${sub}</small></button>`;
   $("homeCounts").innerHTML = `<div class="card"><div class="card-head"><div><h2>Test data on dev</h2><p>Everything with an ${esc(INFO.test_domain || "@sinque-qa.example.com")} email or a “QA ” group name.</p></div></div>
     <div class="count-grid">
@@ -3246,9 +3475,9 @@ const renderCounts = c => {
   $$("#homeCounts [data-goto-btn]").forEach(b => b.onclick = () => show(b.dataset.gotoBtn));
 };
 
-const renderActivity_ = a => {
+const renderActivity_ = (a, subtitle = "Changes made through the tool, by everyone.") => {
   const list = a?.entries || [];
-  $("homeActivity").innerHTML = `<div class="card"><div class="card-head"><div><h2>Recent activity</h2><p>${a?.error ? esc(a.error) : "Changes made through the tool, by everyone."}</p></div>
+  $("homeActivity").innerHTML = `<div class="card"><div class="card-head"><div><h2>Recent activity</h2><p>${a?.error ? esc(a.error) : esc(subtitle)}</p></div>
       <button class="btn btn-ghost btn-sm" data-goto-btn="audit">Audit log ${icon("back", "transform:rotate(180deg)")}</button></div>
     ${list.length ? `<div class="timeline">${list.slice(0, 10).map(e => `<div class="tl-item ${e.ticket || e.user_id ? "click" : ""}" ${e.ticket ? `data-tl-ticket="${esc(e.ticket)}"` : e.user_id ? `data-tl-user="${esc(e.user_id)}"` : ""}>
         <span class="tl-icon">${icon(actionIcon(e.action))}</span>
@@ -3543,6 +3772,7 @@ setTheme(getTheme());
 // ---------- collapsible sidebar ----------
 const setCollapsed = on => {
   document.querySelector(".app").classList.toggle("collapsed", on);
+  $$("#nav button").forEach(b => on ? (b.title = b.dataset.tip) : b.removeAttribute("title")); // labels are hidden: name on hover
   $("collapseBtn").title = on ? "Expand sidebar  [" : "Collapse sidebar  [";
   $("collapseBtn").setAttribute("aria-expanded", String(!on));
   try { localStorage.setItem("qa-sidebar", on ? "collapsed" : "open"); } catch { /* storage off */ }
@@ -4015,9 +4245,9 @@ const healthCard = envs => {
       const up = t.last?.ok;
       return `<div class="home-row">
         <span class="hdot ${t.last ? (up ? "up" : "down") : ""}"></span>
-        <div style="min-width:0;flex:1"><b>${esc(env.name)} · ${esc(t.name)}</b>${env.production ? chip("production", "warn", true) : ""}<small class="muted ellipsis">${esc(env.base_url)}${esc(t.path)}</small></div>
+        <div style="min-width:0;flex:1"><b>${esc(env.name)} · ${esc(t.name)}</b>${env.production ? chip("production", "warn", true) : ""}<small class="muted ellipsis">${env.base_url ? `${esc(env.base_url)}${esc(t.path)}` : "No address set yet"}</small></div>
         <div class="spark" title="Last 4 hours">${t.recent.map(r => `<span class="${r.ok ? "up" : "down"}" style="height:${Math.max(18, Math.min(100, (r.ms / 1500) * 100))}%" title="${fmt(r.at)} · ${r.ok ? `${r.status} in ${r.ms} ms` : "down"}"></span>`).join("")}</div>
-        <div style="text-align:right;min-width:86px"><b class="${up ? "" : "bad-text"}">${t.last ? (up ? `${t.last.ms} ms` : "Down") : "—"}</b><small class="muted">${t.uptime != null ? `${t.uptime}% up` : "not checked yet"}</small></div>
+        <div style="text-align:right;min-width:86px"><b class="${t.last && !up ? "bad-text" : t.last ? "" : "muted"}">${t.last ? (up ? `${t.last.ms} ms` : "Down") : "—"}</b><small class="muted">${t.uptime != null ? `${t.uptime}% up` : env.base_url ? "not checked yet" : "not set"}</small></div>
       </div>`;
     }).join("")}</div></div>`;
 };
@@ -4030,27 +4260,6 @@ const runsCard = runs => {
         <div style="min-width:0;flex:1"><b class="ellipsis">${esc(r.name)}</b><small class="muted">${esc(r.release || "No release")} · ${esc(r.environment || "—")} · ${ago(r.created_at)}</small></div>
         <div style="width:160px">${runBar(r)}<small class="muted">${r.total - r.counts.untested}/${r.total} tested · ${r.counts.failed} failed</small></div></div>`).join("")}</div>`
       : `<div class="card-pad muted" style="font-size:13.5px">No open runs. Start one from Test runs.</div>`}</div>`;
-};
-
-/** The Home page for any project: health and runs, plus Sinque's own cards when it's Sinque. */
-const loadProjectHome = async () => {
-  const [health, runs] = await Promise.all([api("/api/health").catch(() => []), api("/api/runs").catch(() => [])]);
-  $("homeHealthCard").innerHTML = healthCard(health);
-  $("homeRunsCard").innerHTML = runsCard(runs);
-  if ($("healthNow")) $("healthNow").onclick = () => busy($("healthNow"), async () => { $("homeHealthCard").innerHTML = healthCard(await post("/api/health/check")); loadProjectHome(); });
-  $$("#homeHealthCard [data-goto-btn], #homeRunsCard [data-goto-btn]").forEach(b => b.onclick = () => show(b.dataset.gotoBtn));
-  $$("#homeRunsCard [data-run]").forEach(r => r.onclick = () => openRun(r.dataset.run));
-  if (!isSinque()) {
-    const [checks, tickets] = await Promise.all([
-      api("/api/apichecks").catch(() => []),
-      PROJECT.jira_project && INFO.jira_enabled ? api("/api/jira/tickets?scope=all&status=open").catch(e => ({ error: e.message })) : null,
-    ]);
-    renderHomeJira(tickets ? { ...tickets, tickets: tickets.tickets || [] } : null);
-    const ran = checks.filter(c => c.last);
-    $("homeCounts").innerHTML = `<div class="card"><div class="card-head"><div><h2>API checks</h2><p>${checks.length} saved · ${ran.filter(c => c.last.pass).length} passing on their last run</p></div><button class="btn btn-ghost btn-sm" data-goto-btn="apichecks">Open ${icon("back", "transform:rotate(180deg)")}</button></div>
-      ${checks.length ? `<div class="home-list">${checks.slice(0, 6).map(c => `<div class="home-row"><span class="method m-${c.method.toLowerCase()}">${c.method}</span><div style="min-width:0;flex:1"><b class="ellipsis">${esc(c.name)}</b><small class="muted ellipsis">${esc(c.path)}</small></div>${c.last ? chip(c.last.pass ? "Pass" : "Fail", c.last.pass ? "good" : "bad") : chip("Not run", "", true)}</div>`).join("")}</div>` : `<div class="card-pad muted" style="font-size:13.5px">No API checks yet.</div>`}</div>`;
-    $$("#homeCounts [data-goto-btn]").forEach(b => b.onclick = () => show(b.dataset.gotoBtn));
-  }
 };
 
 // ---------- test cases ----------
@@ -5092,7 +5301,7 @@ $("jiraMeBtn").onclick = jiraConnectDialog;
 const paintSideInfo = (info = INFO) => {
   const p = PROJECT, sinque = isSinque(), jiraKey = p ? p.jira_project : info.jira_project;
   $("aiName").textContent = (info.ai_enabled ? `AI on · ${info.ai?.label || "AI"}` : "AI off · see Settings") + (info.jira_enabled && jiraKey ? ` · Jira ${jiraKey}` : "");
-  $("dbName").closest(".env-row").classList.toggle("hidden", !sinque);
+  $("dbName").closest(".env-row").classList.toggle("hidden", !sinque || !info.db_name);
   if (sinque) {
     const ok = !!(info.api_base_url && info.environment?.ok);
     $("envDot").classList.toggle("off", !ok);
@@ -5318,7 +5527,7 @@ const renderGroupPane = g => {
 api("/api/me").then(me => {
   ME = me;
   $("meName").textContent = me.user;
-  $("meRole").textContent = me.role === "admin" ? "Admin · change password" : "Tester · change password";
+  $("meRole").textContent = me.role === "admin" ? "Admin" : "Tester";
   $("meAvatar").textContent = me.user.slice(0, 2).toUpperCase();
   $("meAvatar").style.background = avatarColor(me.user);
   $("navTeam").classList.toggle("hidden", me.role !== "admin");
@@ -5343,7 +5552,7 @@ api("/api/info").then(async info => {
   $("presets").innerHTML = info.presets.map(p => { const [cat, color] = CATEGORY(p.key); return `<button class="preset" data-key="${esc(p.key)}" style="--cat:${color}"><span class="cat">${cat}</span><b>${esc(p.title)}</b><span class="e">${esc(p.expect)}</span></button>`; }).join("");
   $$(".preset").forEach(b => b.onclick = () => fillSpec(info.presets.find(p => p.key === b.dataset.key).spec, b.dataset.key));
   fillSpec(info.presets[0].spec, info.presets[0].key);
-  await loadGroupOptions();
+  if (info.db_name) await loadGroupOptions().catch(e => toast(e.message, "bad"));
 }).catch(e => { $("envState").textContent = "Not connected"; $("envDot").classList.add("off"); toast(e.message, "bad"); });
 </script>
 </body>
