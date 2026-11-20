@@ -1,6 +1,7 @@
 // Environment health: every 5 minutes the tool asks each environment's health
 // addresses for an answer (GET only) and keeps the last 288 results (a day).
 import { allProjects } from "./projects.js";
+import { notifyHealth } from "./notify.js";
 
 const EVERY_MS = 5 * 60 * 1000;
 const KEEP = 288;
@@ -26,6 +27,8 @@ export const checkAll = async () => {
         const key = `${p.key}/${env.id}/${t.name}`;
         const r = { at: new Date().toISOString(), ...(await probe(env, t)) };
         const list = history.get(key) || [];
+        const prev = list.at(-1);
+        if (prev && prev.ok !== r.ok) notifyHealth(p, env, t, !r.ok);
         list.push(r);
         history.set(key, list.slice(-KEEP));
       }

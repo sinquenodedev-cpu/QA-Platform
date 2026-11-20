@@ -14,6 +14,7 @@ import { config } from "./config.js";
 import { readValues } from "./apivalues.js";
 import { badRequest } from "./db.js";
 import { dataPath, newId, now, readJson, updateJson } from "./store.js";
+import { notifyUiRun } from "./notify.js";
 
 const STEP_TIMEOUT = 10000;
 const KEEP_RUNS = 500;
@@ -324,11 +325,14 @@ export const runUiCase = async (project, testCase, envId, actor, { onStep = () =
     pass: !error, error, failed_step: failedAt >= 0 ? failedAt + 1 : null, steps: results, video: videoFile,
     console_errors: consoleErrors.map(m => scrub(m, ctx)), ms: Date.now() - started, at: now(), by: actor, test_run_id: testRunId,
   };
+  let before = null;
   updateJson(runsFile(project), [], all => {
+    before = all.filter(r => r.case_id === run.case_id).at(-1) || null;
     all.push(run);
     const drop = all.splice(0, Math.max(0, all.length - KEEP_RUNS));
     for (const r of drop) fs.rmSync(runDir(project, r.id), { recursive: true, force: true });
   });
+  notifyUiRun(project, before, run);
   return run;
 };
 

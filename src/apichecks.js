@@ -5,6 +5,7 @@ import { badRequest } from "./db.js";
 import { environment } from "./projects.js";
 import { resetTokens, sinqueVars } from "./sinqueapi.js";
 import { dataPath, newId, now, readJson, updateJson } from "./store.js";
+import { notifyApiRuns } from "./notify.js";
 import { RESERVED, VALUE_NAME, compareShape, maskValue, placeholdersIn, readValues, saveValues, shapeFields, shapeOf } from "./apivalues.js";
 
 const file = (project, name) => dataPath("projects", project.key, `${name}.json`);
@@ -77,7 +78,12 @@ export const listChecks = project => {
 
 export const saveRuns = (project, runs) => {
   if (!runs.length) return;
-  updateJson(file(project, "apiruns"), [], all => { all.push(...runs); all.splice(0, Math.max(0, all.length - KEEP_RUNS)); });
+  let before = new Map();
+  updateJson(file(project, "apiruns"), [], all => {
+    for (const r of all) before.set(r.check_id, r);
+    all.push(...runs); all.splice(0, Math.max(0, all.length - KEEP_RUNS));
+  });
+  notifyApiRuns(project, before, runs);
 };
 
 // Tokens and passwords never end up in the stored response.

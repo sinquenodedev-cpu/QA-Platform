@@ -1,6 +1,7 @@
 // Home page overview for one project: what's there, how it's doing, and what needs attention.
 // Read-only and cheap: everything comes from files in data/ and the in-memory health history.
-import { listCases, listRuns, listSuites } from "./testmgmt.js";
+import { getRun, listCases, listRuns, listSuites } from "./testmgmt.js";
+import { projectsFor } from "./projects.js";
 import { listChecks } from "./apichecks.js";
 import { listUiRuns } from "./uiauto.js";
 import { projectHealth } from "./health.js";
@@ -105,4 +106,25 @@ export const overview = project => {
     setup,
     activity,
   };
+};
+
+/** "My work": the cases assigned to this tester in open runs, in every project they can open. */
+export const myWork = (user, role) => {
+  const me = String(user).toLowerCase(), rank = { high: 0, medium: 1, low: 2 };
+  const runs = [];
+  for (const p of projectsFor(me, role)) {
+    for (const s of listRuns(p).filter(r => r.status === "open")) {
+      const mine = Object.entries(s.assignees || {}).filter(([, who]) => who === me).map(([id]) => id);
+      if (!mine.length) continue;
+      const r = getRun(p, s.id);
+      const cases = r.cases.filter(c => mine.includes(c.id)).map(c => ({ id: c.id, title: c.title, priority: c.priority, status: r.results[c.id]?.status || "untested" }));
+      const todo = cases.filter(c => c.status === "untested").sort((a, b) => (rank[a.priority] ?? 1) - (rank[b.priority] ?? 1));
+      runs.push({
+        project: { key: p.key, name: p.name, color: p.color }, run: { id: r.id, name: r.name, release: r.release, environment: r.environment, created_at: r.created_at },
+        total: cases.length, done: cases.length - todo.length, failed: cases.filter(c => c.status === "failed").length, blocked: cases.filter(c => c.status === "blocked").length, todo,
+      });
+    }
+  }
+  runs.sort((a, b) => b.todo.length - a.todo.length);
+  return { runs, todo: runs.reduce((n, r) => n + r.todo.length, 0) };
 };

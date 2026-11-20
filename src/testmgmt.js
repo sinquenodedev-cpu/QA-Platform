@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import { badRequest } from "./db.js";
 import { dataPath, newId, now, readJson, updateJson, writeJson } from "./store.js";
+import { notifyAssigned, notifyRunFailure } from "./notify.js";
 
 const file = (project, name) => dataPath("projects", project.key, `${name}.json`);
 const STATUSES = ["passed", "failed", "blocked", "skipped"];
@@ -129,6 +130,19 @@ export const createRun = (project, body, actor) => {
   return runSummary(r);
 };
 
+/** Why a case is blocked: shown on the run and summed up ("8 blocked by SA-201"). */
+export const BLOCK_REASONS = {
+  bug: "Blocked by a bug", env: "Environment down", data: "Waiting for test data",
+  build: "Waiting for a build or deploy", access: "No access or login", other: "Something else",
+};
+const JIRA_KEY = /^[A-Z][A-Z0-9]*-\d+$/;
+const cleanBlocked = b => {
+  if (!b || !BLOCK_REASONS[b.reason]) throw badRequest("Pick why the case is blocked.");
+  const jira = String(b.jira || "").trim().toUpperCase();
+  if (jira && !JIRA_KEY.test(jira)) throw badRequest("A Jira key looks like SA-201.");
+  return { reason: b.reason, ...(jira ? { jira } : {}) };
+};
+
 export const setResult = (project, runId, caseId, body, actor) => updateJson(file(project, "runs"), [], runs => {
   const r = runs.find(x => x.id === runId);
   if (!r) throw Object.assign(new Error("Test run not found."), { status: 404 });
@@ -137,12 +151,48 @@ export const setResult = (project, runId, caseId, body, actor) => updateJson(fil
   if (body.status === null) { delete r.results[caseId]; return { cleared: caseId }; }
   if (!STATUSES.includes(body.status)) throw badRequest("Status must be passed, failed, blocked or skipped.");
   const prev = r.results[caseId] || {};
+  // Blocked keeps its reason until it's changed; any other result drops it.
+  const blocked = body.status !== "blocked" ? null : body.blocked === undefined ? prev.blocked || null : body.blocked === null ? null : cleanBlocked(body.blocked);
   r.results[caseId] = {
     status: body.status, note: String(body.note ?? prev.note ?? "").slice(0, 2000),
     evidence: prev.evidence || [], jira: body.jira ? [...new Set([...(prev.jira || []), body.jira])] : prev.jira || [],
+    ...(blocked ? { blocked } : {}),
     by: actor, at: now(),
   };
+  if (body.status === "failed" && prev.status !== "failed") {
+    const title = readJson(file(project, "cases"), []).find(c => c.id === caseId)?.title || "A test case";
+    notifyRunFailure(project, r, title, actor);
+  }
   return r.results[caseId];
+});
+
+/**
+ * Who tests what in a run. Either assign some cases to one tester (to: null unassigns),
+ * or split cases evenly between several testers, high priority first.
+ */
+export const assignCases = (project, runId, body, actor, testerNames) => updateJson(file(project, "runs"), [], runs => {
+  const r = runs.find(x => x.id === runId);
+  if (!r) throw Object.assign(new Error("Test run not found."), { status: 404 });
+  if (r.status === "closed") throw badRequest("This run is closed. Reopen it to change who tests what.");
+  const known = new Set(testerNames.map(n => n.toLowerCase()));
+  const ids = (Array.isArray(body.case_ids) ? body.case_ids : r.case_ids).filter(id => r.case_ids.includes(id));
+  if (!ids.length) throw badRequest("Pick at least one test case.");
+  r.assignees = r.assignees || {};
+  const given = {};
+  if (Array.isArray(body.split)) {
+    const people = [...new Set(body.split.map(n => String(n).toLowerCase()))].filter(n => known.has(n));
+    if (!people.length) throw badRequest("Pick at least one tester to split the cases between.");
+    const rank = { high: 0, medium: 1, low: 2 };
+    const ordered = ids.slice().sort((a, b) => (rank[r.snapshot?.[a]?.priority] ?? 1) - (rank[r.snapshot?.[b]?.priority] ?? 1));
+    ordered.forEach((id, i) => { const who = people[i % people.length]; r.assignees[id] = who; given[who] = (given[who] || 0) + 1; });
+  } else {
+    const to = body.to ? String(body.to).toLowerCase() : null;
+    if (to && !known.has(to)) throw badRequest("That tester can't open this project.");
+    for (const id of ids) { if (to) r.assignees[id] = to; else delete r.assignees[id]; }
+    if (to) given[to] = ids.length;
+  }
+  for (const [who, n] of Object.entries(given)) notifyAssigned(project, r, who, n, actor);
+  return { assignees: r.assignees, given };
 });
 
 export const setRunStatus = (project, runId, status, actor) => updateJson(file(project, "runs"), [], runs => {

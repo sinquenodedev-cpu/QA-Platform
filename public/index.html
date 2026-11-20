@@ -579,7 +579,8 @@
   .hdot.up { background: #10b981; box-shadow: 0 0 0 4px color-mix(in srgb, #10b981 18%, transparent); } .hdot.down { background: #ef4444; box-shadow: 0 0 0 4px color-mix(in srgb, #ef4444 18%, transparent); }
   .spark { display: flex; align-items: flex-end; gap: 2px; height: 26px; width: 150px; }
   @media (max-width: 700px) { .spark { display: none; } }
-  .spark span { flex: 1; border-radius: 2px; background: #10b981; opacity: .75; } .spark span.down { background: #ef4444; height: 100% !important; }
+  .spark { justify-content: flex-end; background: linear-gradient(var(--line), var(--line)) bottom / 100% 1px no-repeat; }
+  .spark span { flex: 0 1 3px; min-width: 1px; border-radius: 2px 2px 0 0; background: #10b981; opacity: .8; } .spark span.slow { background: #f59e0b; } .spark span.down { background: #ef4444; height: 100% !important; }
   .bad-text { color: var(--bad); }
   /* test cases */
   .tm-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 18px; align-items: start; }
@@ -888,6 +889,122 @@
 @media (max-width: 600px) { .hm-sinque .health { grid-template-columns: 1fr; } .hm-hero { padding: 20px; } .hm-score { flex-direction: column; align-items: flex-start; } }
 .hm-sk { border-radius: var(--radius); background: linear-gradient(90deg, var(--line-2), var(--surface-2), var(--line-2)); background-size: 200% 100%; animation: hmsk 1.2s infinite linear; }
 @keyframes hmsk { to { background-position: -200% 0; } }
+
+/* ---------- notifications ---------- */
+.bell { position: relative; margin-left: auto; width: 32px; height: 32px; display: grid; place-items: center; flex: none; border: 0; border-radius: 9px; background: rgba(255, 255, 255, .05); color: var(--side-ink); cursor: pointer; transition: background .15s, color .15s; }
+.bell:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+.bell:focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+.bell svg.i { width: 17px; height: 17px; }
+.bell.ring svg.i { animation: bellring 1s ease 1; transform-origin: 50% 10%; }
+@keyframes bellring { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(14deg); } 40% { transform: rotate(-12deg); } 60% { transform: rotate(8deg); } 80% { transform: rotate(-4deg); } }
+.bell-count { position: absolute; top: -4px; right: -5px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #ef4444; color: #fff; font: 700 10.5px/18px var(--font); text-align: center; box-shadow: 0 0 0 2px var(--side); }
+@media (min-width: 901px) { .app.collapsed .brand { flex-direction: column; gap: 10px; } .app.collapsed .bell { margin: 0; } }
+
+.notif-panel { position: fixed; z-index: 80; width: 380px; max-height: min(560px, calc(100vh - 32px)); display: flex; flex-direction: column; background: var(--surface); color: var(--ink);
+               border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, .02); overflow: hidden; animation: pop .18s ease; }
+@media (max-width: 900px) { .notif-panel { left: 12px !important; right: 12px; top: 64px !important; width: auto; } }
+.nt-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 10px; border-bottom: 1px solid var(--line-2); }
+.nt-head h3 { margin: 0; font-size: 15px; } .nt-head small { color: var(--muted); font-size: 12px; }
+.nt-list { overflow-y: auto; padding: 6px; }
+.nt-item { position: relative; display: flex; gap: 11px; width: 100%; padding: 10px; border: 0; border-radius: 11px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.nt-item:hover { background: var(--surface-2); }
+.nt-item.unread { background: color-mix(in srgb, var(--brand) 6%, transparent); }
+.nt-item.unread:hover { background: color-mix(in srgb, var(--brand) 10%, transparent); }
+.nt-item b { display: block; font-size: 13.5px; font-weight: 600; line-height: 1.35; padding-right: 14px; }
+.nt-item small { display: block; color: var(--muted); font-size: 12.5px; }
+.nt-item .nt-meta { margin-top: 3px; font-size: 11.5px; }
+.nt-item.unread::after { content: ""; position: absolute; right: 12px; top: 15px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand); }
+.nt-ic { width: 32px; height: 32px; border-radius: 10px; flex: none; display: grid; place-items: center; }
+.nt-ic svg.i { width: 16px; height: 16px; }
+.nt-empty { padding: 40px 20px; text-align: center; color: var(--muted); font-size: 13.5px; }
+.nt-empty .ring { margin: 0 auto 10px; }
+
+/* tone colours shared by activity icons and notifications */
+.t-good { background: var(--good-bg) !important; color: var(--good) !important; }
+.t-bad { background: var(--bad-bg) !important; color: var(--bad) !important; }
+.t-warn { background: var(--warn-bg) !important; color: var(--warn) !important; }
+.t-info { background: var(--info-bg) !important; color: var(--info) !important; }
+.t-ai { background: color-mix(in srgb, #8b5cf6 14%, transparent) !important; color: #8b5cf6 !important; }
+.t-neutral { background: var(--neutral-bg) !important; color: var(--muted) !important; }
+.t-brand { background: var(--brand-soft) !important; color: var(--brand) !important; }
+
+/* ---------- toasts ---------- */
+.toast { position: relative; align-items: center; padding: 11px 10px 11px 14px; }
+.toast > div { flex: 1; min-width: 0; }
+.toast .t-count { flex: none; min-width: 22px; height: 20px; padding: 0 6px; border-radius: 10px; background: var(--neutral-bg); color: var(--ink-2); font: 700 11px/20px var(--font); text-align: center; }
+.toast .t-x { flex: none; width: 26px; height: 26px; display: grid; place-items: center; border: 0; border-radius: 7px; background: none; color: var(--muted); cursor: pointer; }
+.toast .t-x:hover { background: var(--surface-2); color: var(--ink); }
+.toast .t-x svg.i { width: 14px; height: 14px; color: currentColor !important; }
+.toast.leaving { opacity: 0; transform: translateX(12px); transition: opacity .25s, transform .25s; }
+.toast .t-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 0 0 12px 12px; background: var(--good); opacity: .55; transform-origin: left; animation: tbar linear forwards; }
+.toast:hover .t-bar { animation-play-state: paused; }
+@keyframes tbar { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.toast.warn .t-bar { background: #f59e0b; }
+
+/* ---------- my work, assignment, blocked reasons, similar bugs ---------- */
+.nav-badge { margin-left: auto; min-width: 20px; height: 19px; padding: 0 6px; border-radius: 10px; background: rgba(52, 211, 153, .18); color: #6ee7b7; font: 700 11px/19px var(--font); text-align: center; }
+@media (min-width: 901px) { .app.collapsed .nav-badge { position: absolute; top: 3px; right: 6px; min-width: 16px; height: 16px; padding: 0 4px; font-size: 9.5px; line-height: 16px; background: #10b981; color: #fff; } }
+.mw-run .card-head { align-items: flex-start; }
+.mw-bar { height: 5px; margin: 0 18px 12px; border-radius: 5px; background: var(--line-2); overflow: hidden; }
+.mw-bar span { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--brand), var(--brand-2)); }
+#myWorkList { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 16px; align-items: start; }
+@media (max-width: 600px) { #myWorkList { grid-template-columns: 1fr; } }
+
+.who-chip { flex: none; width: 24px; height: 24px; border-radius: 50%; display: inline-grid; place-items: center; color: #fff; font: 700 10px var(--font); letter-spacing: .02em; }
+.as-people { display: flex; flex-direction: column; gap: 4px; max-height: 300px; overflow-y: auto; }
+.as-person { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); cursor: pointer; font-size: 13.5px; }
+.as-person:hover { background: var(--surface-2); }
+.as-person:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); }
+.rc-assign { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.rc-assign select { font: inherit; font-size: 13px; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+
+.block-why { padding: 12px 14px; border-radius: 12px; background: var(--warn-bg); border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent); }
+.block-why > b { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--warn); margin-bottom: 8px; }
+.block-why > b svg.i { width: 15px; height: 15px; }
+.block-reasons { display: flex; flex-wrap: wrap; gap: 6px; }
+.block-reasons button { padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); font: 500 12.5px var(--font); cursor: pointer; }
+.block-reasons button:hover { border-color: var(--warn); }
+.block-reasons button.on { background: var(--warn); border-color: var(--warn); color: #fff; }
+.block-jira { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 13px; }
+.block-jira input { width: 130px; font: 500 13px var(--mono); padding: 6px 9px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-transform: uppercase; }
+.blocked-sum { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 12.5px; }
+.blocked-sum > span:first-child { color: var(--warn); font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+.blocked-sum svg.i { width: 14px; height: 14px; }
+
+.rb-similar { margin-top: 4px; }
+.rb-head { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; background: var(--warn-bg); color: var(--ink-2); font-size: 13px; margin-bottom: 8px; }
+.rb-head svg.i { color: var(--warn); width: 16px; height: 16px; margin-top: 1px; flex: none; }
+.rb-t { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; margin-top: 6px; }
+.rb-none { display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--good-bg); color: var(--good); font-size: 13px; font-weight: 500; }
+.rb-none svg.i { width: 16px; height: 16px; }
+
+/* project logos */
+.proj-badge.has-logo { background: #fff; padding: 2px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(15, 29, 36, .08); }
+.proj-badge.has-logo img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: calc(var(--r, 8px) - 2px); }
+.logo-pick { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+
+/* ---------- page headers (every page except Home) ---------- */
+.page-head.ph { position: relative; overflow: hidden; align-items: center; gap: 18px; padding: 20px 24px; margin-bottom: 20px; border-radius: 18px;
+  background: radial-gradient(110% 200% at 0% 0%, color-mix(in srgb, var(--pc, var(--brand)) 13%, transparent), transparent 58%), var(--surface);
+  border: 1px solid var(--line); box-shadow: var(--shadow); }
+.page-head.ph::after { content: ""; position: absolute; right: -90px; top: -130px; width: 300px; height: 300px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--pc, var(--brand)) 10%, transparent), transparent 70%); }
+.page-head.ph > * { position: relative; z-index: 1; }
+.ph-icon { width: 48px; height: 48px; flex: none; border-radius: 14px; display: grid; place-items: center; color: #fff;
+  background: linear-gradient(140deg, var(--pc, var(--brand)), color-mix(in srgb, var(--pc, var(--brand)) 62%, #34d399));
+  box-shadow: 0 8px 20px -10px color-mix(in srgb, var(--pc, var(--brand)) 80%, transparent), inset 0 1px 0 rgba(255, 255, 255, .25); }
+.ph-icon svg.i { width: 22px; height: 22px; }
+.ph-text { flex: 1; min-width: 220px; }
+.page-head.ph > :last-child:not(.ph-text) { margin-left: auto; } /* buttons stay on the right, even when they wrap */
+.ph-kicker { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .01em; white-space: nowrap; overflow: hidden; }
+.ph-kicker i { font-style: normal; color: var(--line); font-weight: 400; }
+.ph-kicker .ph-all { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); }
+.ph-kicker .ph-all svg.i { width: 12px; height: 12px; }
+.proj-badge.xs { width: 18px; height: 18px; font-size: 9.5px; border-radius: 5px; }
+.proj-badge.xs.has-logo { padding: 1px; }
+.page-head.ph h1 { font-size: 22px; margin: 0 0 3px; line-height: 1.2; }
+.page-head.ph .ph-text > p { margin: 0; max-width: 780px; font-size: 13.5px; line-height: 1.55; }
+@media (max-width: 700px) { .page-head.ph { padding: 16px; gap: 12px; align-items: flex-start; } .ph-icon { width: 40px; height: 40px; border-radius: 12px; } .ph-icon svg.i { width: 19px; height: 19px; } .page-head.ph h1 { font-size: 19px; } }
 </style>
 <script>try { const t = localStorage.getItem("qa-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch { /* storage off */ }</script>
 </head>
@@ -896,13 +1013,14 @@
 
 <div class="app">
   <aside id="side">
-    <div class="brand"><div class="logo" style="font-size:14px;letter-spacing:-.02em">eF</div><div class="brand-text"><b>eFutures QA</b><span>Test platform</span></div></div>
+    <div class="brand"><div class="logo" style="font-size:14px;letter-spacing:-.02em">eF</div><div class="brand-text"><b>eFutures QA</b><span>Test platform</span></div><button class="bell" id="bellBtn" title="Notifications" aria-label="Notifications" aria-haspopup="dialog"><svg class="i"><use href="#i-bell"/></svg><span class="bell-count hidden" id="bellCount"></span></button></div>
     <div class="proj-switch"><button class="proj-btn" id="projBtn"><span class="proj-badge" style="--c:#0e7490">S</span><span class="proj-text"><b>Sinque</b><small>Loading…</small></span></button><div class="proj-menu hidden" id="projMenu"></div></div>
     <button class="collapse-btn" id="collapseBtn" title="Collapse sidebar  [" aria-expanded="true"><svg class="i"><use href="#i-chev"/></svg></button>
     <nav class="nav" id="nav">
       <button data-view="home" data-tip="Home" class="active"><svg class="i"><use href="#i-home"/></svg><span class="lbl">Home</span></button>
 
       <div class="nav-label">Testing</div>
+      <button data-view="mywork" data-tip="My work"><svg class="i"><use href="#i-inbox"/></svg><span class="lbl">My work</span><span class="nav-badge hidden" id="myWorkBadge"></span></button>
       <button data-view="cases" data-tip="Test cases"><svg class="i"><use href="#i-list"/></svg><span class="lbl">Test cases</span></button>
       <button data-view="runs" data-tip="Test runs"><svg class="i"><use href="#i-play"/></svg><span class="lbl">Test runs</span></button>
       <button data-view="apichecks" data-tip="API checks"><svg class="i"><use href="#i-cloud"/></svg><span class="lbl">API checks</span></button>
@@ -1062,6 +1180,12 @@
     </section>
 
     <!-- TEST RUNS -->
+    <section id="view-mywork" class="hidden">
+      <div class="page-head"><div><h1>My work</h1><p id="myWorkSub">Cases assigned to you in open test runs, across your projects.</p></div>
+        <button class="btn btn-ghost" id="myWorkRefresh"><svg class="i"><use href="#i-refresh"/></svg>Refresh</button></div>
+      <div id="myWorkList"></div>
+    </section>
+
     <section id="view-runs" class="hidden">
       <div class="page-head"><div><h1>Test runs</h1><p>One run per release, sprint or hotfix. Testers mark each case passed, failed, blocked or skipped, add screenshots, and raise bugs in Jira from a failed case.</p></div>
         <button class="btn btn-primary" id="runNewBtn"><svg class="i"><use href="#i-plus"/></svg>New test run</button></div>
@@ -1075,7 +1199,7 @@
       <div id="runHead"></div>
       <div class="toolbar" style="margin:16px 0">
         <span class="label">Show</span>
-        <div class="seg" id="runFilter"><button data-f="" class="on">All</button><button data-f="untested">To do</button><button data-f="failed">Failed</button><button data-f="blocked">Blocked</button><button data-f="passed">Passed</button></div>
+        <div class="seg" id="runFilter"><button data-f="" class="on">All</button><button data-f="mine">Mine</button><button data-f="untested">To do</button><button data-f="failed">Failed</button><button data-f="blocked">Blocked</button><button data-f="passed">Passed</button></div>
         <span style="flex:1"></span>
         <span class="muted" style="font-size:12px">Keys on an open case: <kbd>P</kbd> pass · <kbd>F</kbd> fail · <kbd>B</kbd> blocked · <kbd>S</kbd> skip · paste a screenshot with <kbd>Ctrl</kbd>+<kbd>V</kbd></span>
       </div>
@@ -1462,7 +1586,8 @@
 
   </main>
 </div>
-<div class="toasts" id="toasts"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="notif-panel hidden" id="notifPanel" role="dialog" aria-label="Notifications"></div>
 
 <svg width="0" height="0" style="position:absolute">
   <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
@@ -1479,6 +1604,8 @@
   <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-check-all" viewBox="0 0 24 24"><path d="M18 6 7 17l-5-5M22 10l-7.5 7.5L13 16"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m10 8.5 5.5 3.5-5.5 3.5z"/></symbol>
   <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></symbol>
   <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
@@ -1535,12 +1662,38 @@ const api = async (path, opts = {}) => {
 };
 const post = (path, body = {}) => api(path, { method: "POST", body: JSON.stringify(body) });
 
+const TOAST_MS = { good: 3500, info: 4500, warn: 6000 }; // errors ("bad") stay until closed
 const toast = (text, kind = "good") => {
+  const box = $("toasts"), key = `${kind}|${text}`;
+  const same = [...box.children].find(el => el.dataset.key === key && !el.classList.contains("leaving"));
+  if (same) {
+    const n = +same.dataset.n + 1, c = same.querySelector(".t-count");
+    same.dataset.n = n; c.textContent = `×${n}`; c.classList.remove("hidden");
+    same.restart?.();
+    return;
+  }
   const el = document.createElement("div");
   el.className = `toast ${kind === "good" ? "" : kind}`;
-  el.innerHTML = `${icon(kind === "good" ? "check" : "alert")}<div>${esc(text)}</div>`;
-  $("toasts").append(el);
-  setTimeout(() => { el.style.transition = "opacity .3s"; el.style.opacity = "0"; setTimeout(() => el.remove(), 300); }, kind === "bad" ? 7000 : 3500);
+  el.dataset.key = key; el.dataset.n = 1;
+  el.setAttribute("role", kind === "bad" ? "alert" : "status");
+  el.innerHTML = `${icon(kind === "good" ? "check" : "alert")}<div>${esc(text)}</div><span class="t-count hidden"></span><button class="t-x" aria-label="Dismiss" title="Dismiss">${icon("x")}</button>`;
+  const leave = () => { clearTimeout(el._t); el.classList.add("leaving"); setTimeout(() => el.remove(), 250); };
+  el.querySelector(".t-x").onclick = leave;
+  const ms = TOAST_MS[kind];
+  if (ms) {
+    let left = ms, started = Date.now();
+    const bar = document.createElement("span");
+    bar.className = "t-bar"; bar.style.animationDuration = `${ms}ms`;
+    el.append(bar);
+    const run = () => { started = Date.now(); clearTimeout(el._t); el._t = setTimeout(leave, left); };
+    el.restart = () => { left = ms; bar.style.animation = "none"; void bar.offsetWidth; bar.style.animation = ""; bar.style.animationDuration = `${ms}ms`; run(); };
+    el.onmouseenter = () => { clearTimeout(el._t); left = Math.max(800, left - (Date.now() - started)); };
+    el.onmouseleave = run;
+    run();
+  }
+  box.append(el);
+  const live = [...box.children].filter(x => !x.classList.contains("leaving"));
+  if (live.length > 4) live[0].querySelector(".t-x").click();
 };
 const busy = async (btn, fn) => {
   btn.disabled = true; btn.classList.add("loading");
@@ -1587,7 +1740,7 @@ let INFO = {}, GROUPS = [], currentUser = null, userDetail = null, PROJECT = nul
 
 // ---------- navigation ----------
 const show = view => {
-  ["users", "user", "scenario", "groups", "pros", "checker", "plan", "presets", "audit", "team", "jira", "ticket", "home", "cleanup", "rules", "cases", "runs", "run", "apichecks", "projects", "settings", "coverage"].forEach(v => $(`view-${v}`).classList.toggle("hidden", v !== view));
+  ["users", "user", "scenario", "groups", "pros", "checker", "plan", "presets", "audit", "team", "jira", "ticket", "home", "cleanup", "rules", "cases", "runs", "run", "apichecks", "projects", "settings", "coverage", "mywork"].forEach(v => $(`view-${v}`).classList.toggle("hidden", v !== view));
   $$("#nav button").forEach(b => b.classList.toggle("active", b.dataset.view === (view === "user" ? "users" : view === "ticket" ? "jira" : view === "run" ? "runs" : view)));
   $("side").classList.remove("open");
   window.scrollTo({ top: 0 });
@@ -1600,6 +1753,7 @@ const show = view => {
   if (view === "rules") loadRules().catch(e => toast(e.message, "bad"));
   if (view === "cases") loadCases().catch(e => toast(e.message, "bad"));
   if (view === "runs") loadRuns().catch(e => toast(e.message, "bad"));
+  if (view === "mywork") loadMyWork().catch(e => toast(e.message, "bad"));
   if (view === "apichecks") loadApiChecks().catch(e => toast(e.message, "bad"));
   if (view === "projects") loadProjectsPage().catch(e => toast(e.message, "bad"));
   if (view === "settings") loadSettings().catch(e => toast(e.message, "bad"));
@@ -3266,8 +3420,15 @@ const describeEntry = e => {
   if (e.pass != null) bits.push(e.pass === true ? "passed" : e.pass === false ? "failed" : String(e.pass));
   return bits.filter(Boolean).join(" · ");
 };
-const ACTION_ICON = [[/jira|ticket|test case/, "ticket"], [/preset/, "check"], [/measurement/, "scale"], [/delete|remove/, "trash"], [/tester|password/, "key"], [/AI|scan/i, "sparkle"], [/group|overview/, "layers"], [/user/, "user"]];
-const actionIcon = a => (ACTION_ICON.find(([re]) => re.test(a)) || [, "list"])[1];
+const ACTION_ICON = [[/UI automation/, "edit"], [/UI test|test run|ticket test case/, "play"], [/jira|ticket/, "ticket"], [/generate|AI|scan|explain/i, "sparkle"], [/preset/, "check-all"],
+  [/measurement/, "scale"], [/delete|remove|clean up/, "trash"], [/password|tester/, "key"], [/settings/, "sliders"], [/project/, "folder"], [/group|overview/, "layers"], [/user/, "user"], [/test case/, "list"]];
+const actionIcon = (a, e = {}) => (e.pass === true ? "check" : e.pass === false ? "x" : (ACTION_ICON.find(([re]) => re.test(a)) || [, "list"])[1]);
+const actionTone = (a, e = {}) =>
+  e.pass === false || e.status === "failed" || /delete|remove|clean up/.test(a) ? "bad"
+  : e.pass === true || /^(create|add|start|connect)/.test(a) ? "good"
+  : /jira|ticket/.test(a) ? "info"
+  : /generate|AI|scan|explain|automation/i.test(a) ? "ai"
+  : /settings|password|tester|project/.test(a) ? "neutral" : "brand";
 
 // ---------- Home: one overview per project ----------
 const rateTone = v => (v == null ? "" : v >= 90 ? "good" : v >= 70 ? "warn" : "bad");
@@ -3364,7 +3525,7 @@ const loadHome = async () => {
   const p = PROJECT || { name: "Sinque", color: "#0e7490", environments: [] };
   $("view-home").style.setProperty("--pc", p.color || "#0e7490");
   const env = (p.environments || [])[0];
-  $("homeKicker").innerHTML = `<span class="proj-badge" style="--c:${esc(p.color || "#0e7490")}">${esc((p.name || "?")[0])}</span>${esc(p.name)}${env ? `<span class="sep">·</span>${esc(env.name)}` : ""}`;
+  $("homeKicker").innerHTML = `${projBadge(p)}${esc(p.name)}${env ? `<span class="sep">·</span>${esc(env.name)}` : ""}`;
   homeActions();
   if (!HOME || HOME.project.key !== p.key) {
     $("homeScore").innerHTML = `<div class="hm-sk" style="height:150px"></div>`;
@@ -3422,11 +3583,10 @@ const renderRuns = runs => {
     const pct = last.total ? Math.round((last.passed / last.total) * 100) : 0;
     const prev = runs[1];
     const delta = prev ? last.passed - prev.passed : 0;
-    $("homeRuns").innerHTML = `<div class="card run-card ${ok ? "ok" : "bad"}"><div class="card-pad">
-      <div class="row between" style="align-items:flex-start">
-        <div class="section-title" style="margin:0">Report regression · last “Run all presets”</div>
-        <button class="btn btn-ghost btn-sm" data-goto-btn="presets">${icon("refresh")}Run again</button>
-      </div>
+    $("homeRuns").innerHTML = `<div class="card run-card ${ok ? "ok" : "bad"}">
+      <div class="card-head"><div><h2>Report regression</h2><p>Last “Run all presets”</p></div>
+        <button class="btn btn-ghost btn-sm" data-goto-btn="presets">${icon("refresh")}Run again</button></div>
+      <div class="card-pad" style="padding-top:4px">
       <div class="run-main">
         <div class="ring-score" style="--pct:${pct};--c:${ok ? "#10b981" : "#ef4444"}"><div><b>${last.passed}<span>/${last.total}</span></b><small>passing</small></div></div>
         <div class="stack" style="gap:6px;min-width:0">
@@ -3480,7 +3640,7 @@ const renderActivity_ = (a, subtitle = "Changes made through the tool, by everyo
   $("homeActivity").innerHTML = `<div class="card"><div class="card-head"><div><h2>Recent activity</h2><p>${a?.error ? esc(a.error) : esc(subtitle)}</p></div>
       <button class="btn btn-ghost btn-sm" data-goto-btn="audit">Audit log ${icon("back", "transform:rotate(180deg)")}</button></div>
     ${list.length ? `<div class="timeline">${list.slice(0, 10).map(e => `<div class="tl-item ${e.ticket || e.user_id ? "click" : ""}" ${e.ticket ? `data-tl-ticket="${esc(e.ticket)}"` : e.user_id ? `data-tl-user="${esc(e.user_id)}"` : ""}>
-        <span class="tl-icon">${icon(actionIcon(e.action))}</span>
+        <span class="tl-icon t-${actionTone(e.action, e)}">${icon(actionIcon(e.action, e))}</span>
         <div style="min-width:0;flex:1"><div><b>${esc(e.actor)}</b> ${esc(e.action)}</div><small class="muted ellipsis">${esc(describeEntry(e)) || "&nbsp;"}</small></div>
         <small class="muted" style="white-space:nowrap">${ago(e.at)}</small></div>`).join("")}</div>`
       : `<div class="card-pad muted">Nothing yet.</div>`}
@@ -4200,8 +4360,9 @@ const isSinque = () => !PROJECT || PROJECT.pack === "sinque"; // before projects
 
 const applyProject = () => {
   const p = PROJECT;
-  $("projBtn").innerHTML = `<span class="proj-badge" style="--c:${esc(p.color)}">${esc(p.name[0])}</span><span class="proj-text"><b>${esc(p.name)}</b><small>${p.pack === "sinque" ? "Data tools + rule checks" : "Test cases · runs · API checks"}</small></span>${icon("chev", "transform:rotate(-90deg)")}`;
+  $("projBtn").innerHTML = `${projBadge(p)}<span class="proj-text"><b>${esc(p.name)}</b><small>${p.pack === "sinque" ? "Data tools + rule checks" : "Test cases · runs · API checks"}</small></span>${icon("chev", "transform:rotate(-90deg)")}`;
   $("projBtn").title = `Project: ${p.name}`;
+  if (typeof paintPageHeads === "function") paintPageHeads();
   $$("[data-pack]").forEach(el => el.classList.toggle("hidden", el.dataset.pack !== (p.pack || "")));
   $$("[data-project-name]").forEach(el => el.textContent = p.name);
   try { localStorage.setItem("qa-project", p.key); } catch { /* storage off */ }
@@ -4227,7 +4388,7 @@ const switchProject = key => {
 
 $("projBtn").onclick = e => {
   e.stopPropagation();
-  $("projMenu").innerHTML = `${PROJECTS.map(p => `<button data-proj="${esc(p.key)}" class="${p.key === PROJECT.key ? "on" : ""}"><span class="proj-badge" style="--c:${esc(p.color)}">${esc(p.name[0])}</span><span><b>${esc(p.name)}</b><small>${esc(p.key)}${p.jira_project ? ` · Jira ${esc(p.jira_project)}` : ""}</small></span>${p.key === PROJECT.key ? icon("check") : ""}</button>`).join("")}
+  $("projMenu").innerHTML = `${PROJECTS.map(p => `<button data-proj="${esc(p.key)}" class="${p.key === PROJECT.key ? "on" : ""}">${projBadge(p)}<span><b>${esc(p.name)}</b><small>${esc(p.key)}${p.jira_project ? ` · Jira ${esc(p.jira_project)}` : ""}</small></span>${p.key === PROJECT.key ? icon("check") : ""}</button>`).join("")}
     ${ME.role === "admin" ? `<div class="proj-sep"></div><button data-proj-manage>${icon("sliders")}<span><b>Manage projects</b><small>Add a product, environments, Jira</small></span></button>` : ""}`;
   $("projMenu").classList.toggle("hidden");
   $$("[data-proj]").forEach(b => b.onclick = () => switchProject(b.dataset.proj));
@@ -4246,8 +4407,8 @@ const healthCard = envs => {
       return `<div class="home-row">
         <span class="hdot ${t.last ? (up ? "up" : "down") : ""}"></span>
         <div style="min-width:0;flex:1"><b>${esc(env.name)} · ${esc(t.name)}</b>${env.production ? chip("production", "warn", true) : ""}<small class="muted ellipsis">${env.base_url ? `${esc(env.base_url)}${esc(t.path)}` : "No address set yet"}</small></div>
-        <div class="spark" title="Last 4 hours">${t.recent.map(r => `<span class="${r.ok ? "up" : "down"}" style="height:${Math.max(18, Math.min(100, (r.ms / 1500) * 100))}%" title="${fmt(r.at)} · ${r.ok ? `${r.status} in ${r.ms} ms` : "down"}"></span>`).join("")}</div>
-        <div style="text-align:right;min-width:86px"><b class="${t.last && !up ? "bad-text" : t.last ? "" : "muted"}">${t.last ? (up ? `${t.last.ms} ms` : "Down") : "—"}</b><small class="muted">${t.uptime != null ? `${t.uptime}% up` : env.base_url ? "not checked yet" : "not set"}</small></div>
+        <div class="spark" title="Last 4 hours. Bar height is the response time (full height = 2 s or more); amber = slower than 1 s.">${t.recent.map(r => `<span class="${!r.ok ? "down" : r.ms > 1000 ? "slow" : "up"}" style="height:${r.ok ? Math.max(12, Math.min(100, (r.ms / 2000) * 100)) : 100}%" title="${fmt(r.at)} · ${r.ok ? `${r.status} in ${r.ms} ms${r.ms > 1000 ? " (slow)" : ""}` : "down"}"></span>`).join("")}</div>
+        <div style="text-align:right;min-width:86px"><b class="${t.last && !up ? "bad-text" : t.last ? "" : "muted"}" style="${up && t.last.ms > 1000 ? "color:var(--warn)" : ""}">${t.last ? (up ? `${t.last.ms} ms` : "Down") : "—"}</b><small class="muted">${t.uptime != null ? `${t.uptime}% up` : env.base_url ? "not checked yet" : "not set"}</small></div>
       </div>`;
     }).join("")}</div></div>`;
 };
@@ -4648,7 +4809,7 @@ const openRun = async id => {
   show("run");
   if (RUN.run?.id !== id) { RUN.open = null; RUN.filter = ""; $$("#runFilter button").forEach(x => x.classList.toggle("on", x.dataset.f === "")); }
   $("runHead").innerHTML = `<div class="card hero">${skeletonRows(3)}</div>`;
-  [RUN.run, RUN.library] = await Promise.all([api(`/api/runs/${id}`), api("/api/cases").catch(() => [])]);
+  [RUN.run, RUN.library, RUN.names] = await Promise.all([api(`/api/runs/${id}`), api("/api/cases").catch(() => []), api("/api/testers/names").catch(() => [])]);
   renderRun();
 };
 
@@ -4660,18 +4821,21 @@ const renderRun = () => {
       <h1 style="margin-top:8px">${esc(r.name)}</h1>
       <div class="meta"><span>${icon("user")}Started by ${esc(r.created_by)} ${ago(r.created_at)}</span><span>${icon("list")}${r.total} test cases</span></div>
       <div style="margin-top:14px;max-width:620px">${runBar(r)}
-        <div class="run-legend">${Object.entries(ST).map(([k, [l, c]]) => `<span><i style="background:${c}"></i>${l} <b>${r.counts[k]}</b></span>`).join("")}</div></div>
+        <div class="run-legend">${Object.entries(ST).map(([k, [l, c]]) => `<span><i style="background:${c}"></i>${l} <b>${r.counts[k]}</b></span>`).join("")}</div>
+        ${r.counts.blocked ? `<div class="blocked-sum"><span>${icon("alert")}${r.counts.blocked} blocked:</span>${blockedSummary(r).map(([l, n]) => chip(`${n} ${l}`, "warn", true)).join("")}</div>` : ""}</div>
     </div>
     <div class="stack" style="gap:8px;align-items:flex-end">
       <div class="ring-score" style="--pct:${pct};--c:${r.counts.failed ? "#ef4444" : "#10b981"}"><div><b>${pct}<span>%</span></b><small>tested</small></div></div>
       <div class="row" style="gap:6px;justify-content:flex-end">
         ${(() => { const n = r.cases.filter(c => (RUN.library || []).find(x => x.id === c.id)?.automation?.steps?.length).length; return n && r.status !== "closed" ? `<button class="btn btn-primary btn-sm" id="runAuto" title="Runs the automated test cases in a browser and records pass/fail with screenshots"><span class="spin"></span>${icon("monitor")}Run ${n} automated</button>` : ""; })()}
+        ${r.status !== "closed" ? `<button class="btn btn-ghost btn-sm" id="runAssign" title="Split the cases between testers"><span class="spin"></span>${icon("user-check")}Assign</button>` : ""}
         <button class="btn btn-ghost btn-sm" id="runReport">${icon("download")}Sign-off report</button>
         <button class="btn btn-ghost btn-sm" id="runToggle"><span class="spin"></span>${r.status === "closed" ? "Reopen" : `${icon("check")}Close run`}</button>
       </div>
     </div></div>`;
   $("runToggle").onclick = () => busy($("runToggle"), async () => { await post(`/api/runs/${r.id}/status`, { status: r.status === "closed" ? "open" : "closed" }); await openRun(r.id); });
   $("runReport").onclick = () => signOffReport(r);
+  if ($("runAssign")) $("runAssign").onclick = () => busy($("runAssign"), assignDialog);
   if ($("runAuto")) $("runAuto").onclick = () => busy($("runAuto"), async () => {
     const job = await runJob(`/api/runs/${r.id}/automated`, {});
     toast(`Running the automated cases. Results land here as they finish.`);
@@ -4685,7 +4849,7 @@ const statusOf = id => RUN.run.results[id]?.status || "untested";
 
 const renderRunCases = () => {
   const r = RUN.run;
-  const list = r.cases.filter(c => !RUN.filter || statusOf(c.id) === RUN.filter);
+  const list = r.cases.filter(c => !RUN.filter || (RUN.filter === "mine" ? r.assignees?.[c.id] === me() : statusOf(c.id) === RUN.filter));
   const suiteName = id => r.suites.find(s => s.id === id)?.name || "";
   $("runCases").innerHTML = list.length ? list.map(c => {
     const st = statusOf(c.id), res = r.results[c.id], open = RUN.open === c.id;
@@ -4694,18 +4858,24 @@ const renderRunCases = () => {
         <span class="rc-dot">${icon(ST[st][2])}</span>
         <div style="min-width:0;flex:1"><div class="row" style="gap:6px"><span class="mono muted" style="font-size:12px">${esc(c.id)}</span><span class="muted" style="font-size:12px">${esc(suiteName(c.suite_id))}</span>${chip(c.priority, PRIO_TONE[c.priority], c.priority === "low")}</div>
           <b>${esc(c.title)}</b></div>
-        <span class="rc-status" style="color:${ST[st][1]}">${ST[st][0]}${res?.evidence?.length ? ` · ${icon("download")}${res.evidence.length}` : ""}${res?.jira?.length ? ` · ${res.jira.map(esc).join(", ")}` : ""}</span>
+        ${r.assignees?.[c.id] ? whoChip(r.assignees[c.id]) : ""}
+        <span class="rc-status" style="color:${ST[st][1]}">${ST[st][0]}${st === "blocked" && res?.blocked ? ` · ${esc(res.blocked.jira || BLOCK_SHORT[res.blocked.reason])}` : ""}${res?.evidence?.length ? ` · ${icon("download")}${res.evidence.length}` : ""}${res?.jira?.length ? ` · ${res.jira.map(esc).join(", ")}` : ""}</span>
       </div>
       ${open ? `<div class="rc-body">
         ${c.preconditions ? `<div class="tc-given"><span>Given</span>${esc(c.preconditions)}</div>` : ""}
         ${c.steps.length ? `<table class="rc-steps"><thead><tr><th>#</th><th>Do this</th><th>Expected</th></tr></thead><tbody>${c.steps.map((s, i) => `<tr><td class="num">${i + 1}</td><td>${esc(s.action)}</td><td>${esc(s.expected)}</td></tr>`).join("")}</tbody></table>` : ""}
         <div class="rc-actions">${["passed", "failed", "blocked", "skipped"].map(s => `<button class="rc-btn ${st === s ? "on" : ""}" data-set="${s}" style="--c:${ST[s][1]}" ${r.status === "closed" ? "disabled" : ""}>${icon(ST[s][2])}${ST[s][0]}</button>`).join("")}
           ${res ? `<button class="btn btn-ghost btn-sm" data-set="" ${r.status === "closed" ? "disabled" : ""}>Clear</button>` : ""}</div>
+        ${st === "blocked" ? `<div class="block-why"><b>${icon("alert")}Why is it blocked?</b>
+          <div class="block-reasons">${Object.entries(BLOCK_REASONS).map(([k, l]) => `<button data-why="${k}" class="${res?.blocked?.reason === k ? "on" : ""}" ${r.status === "closed" ? "disabled" : ""}>${l}</button>`).join("")}</div>
+          ${res?.blocked?.reason === "bug" ? `<div class="block-jira">Which bug? <input data-why-jira value="${esc(res.blocked.jira || "")}" placeholder="${esc(PROJECT.jira_project || "SA")}-123" ${r.status === "closed" ? "disabled" : ""}><span class="muted">optional, groups the blocked cases by bug</span></div>` : ""}</div>` : ""}
         <label class="field" style="margin:0">Note<textarea data-note rows="2" placeholder="What you saw, test data used, build number…" ${r.status === "closed" ? "disabled" : ""}>${esc(res?.note || "")}</textarea></label>
         <div class="row" style="gap:8px">
           ${res ? `<label class="btn btn-ghost btn-sm" style="cursor:pointer">${icon("plus")}Add screenshot or file<input type="file" data-file accept="image/*,.pdf,.txt" hidden></label>` : `<span class="muted" style="font-size:12px">Set a result to add screenshots.</span>`}
           ${st === "failed" && PROJECT.jira_project && INFO.jira_enabled ? `<button class="btn btn-ghost btn-sm" data-bug><span class="spin"></span>${icon("ticket")}Raise bug in ${esc(PROJECT.jira_project)}</button>` : ""}
           ${(res?.jira || []).map(k => `<a href="#" data-ticket="${esc(k)}" style="text-decoration:none">${chip(k, "info")}</a>`).join("")}
+          <span style="flex:1"></span>
+          <label class="rc-assign">${icon("user")}Tester<select data-assign ${r.status === "closed" ? "disabled" : ""}><option value="">Nobody yet</option>${(RUN.names || []).map(n => `<option value="${esc(n)}" ${r.assignees?.[c.id] === n ? "selected" : ""}>${esc(n)}${n === me() ? " (me)" : ""}</option>`).join("")}</select></label>
         </div>
         ${res?.evidence?.length ? `<div class="evidence">${res.evidence.map(e => e.type.startsWith("image/")
           ? `<a href="/files/${esc(PROJECT.key)}/${esc(r.id)}/${esc(e.file)}" target="_blank" rel="noopener" title="${esc(e.name)} · ${esc(e.by)}"><img src="/files/${esc(PROJECT.key)}/${esc(r.id)}/${esc(e.file)}" alt="${esc(e.name)}"></a>`
@@ -4721,7 +4891,15 @@ const renderRunCases = () => {
     const file = card.querySelector("[data-file]");
     if (file) file.onchange = () => file.files[0] && attachEvidence(id, file.files[0]);
     const bug = card.querySelector("[data-bug]");
-    if (bug) bug.onclick = () => busy(bug, () => raiseBug(id));
+    if (bug) bug.onclick = () => raiseBugDialog(id);
+    card.querySelectorAll("[data-why]").forEach(b => b.onclick = () => setBlocked(id, { reason: b.dataset.why, jira: b.dataset.why === "bug" ? r.results[id]?.blocked?.jira : undefined }));
+    const wj = card.querySelector("[data-why-jira]");
+    if (wj) wj.onchange = () => setBlocked(id, { reason: "bug", jira: wj.value.trim() });
+    const as = card.querySelector("[data-assign]");
+    if (as) as.onchange = async () => {
+      try { await post(`/api/runs/${r.id}/assign`, { case_ids: [id], to: as.value || null }); RUN.run = await api(`/api/runs/${r.id}`); renderRun(); loadMyWorkBadge(); toast(as.value ? `${id} → ${as.value}` : `${id} unassigned`); }
+      catch (e) { toast(e.message, "bad"); }
+    };
     const note = card.querySelector("[data-note]");
     if (note) note.onchange = () => statusOf(id) !== "untested" && setRunResult(id, statusOf(id), true);
   });
@@ -4735,11 +4913,21 @@ const setRunResult = async (caseId, status, quiet = false) => {
   // Move on to the next case still to do, so testers can work through a run quickly.
   if (!quiet && status) {
     const next = RUN.run.cases.find(c => statusOf(c.id) === "untested");
-    RUN.open = status === "failed" ? caseId : next?.id || null;
+    RUN.open = status === "failed" || status === "blocked" ? caseId : next?.id || null; // failed: add a screenshot; blocked: say why
   }
   renderRun();
   if (RUN.open) document.querySelector(`[data-rc="${RUN.open}"]`)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   if (!quiet && status) toast(`${caseId}: ${ST[status][0]}`);
+};
+
+const setBlocked = async (caseId, blocked) => {
+  const note = document.querySelector(`[data-rc="${caseId}"] [data-note]`)?.value;
+  try {
+    await post(`/api/runs/${RUN.run.id}/results/${caseId}`, { status: "blocked", note, blocked });
+    RUN.run = await api(`/api/runs/${RUN.run.id}`);
+    RUN.open = caseId; renderRun();
+    toast(`${caseId}: ${BLOCK_REASONS[blocked.reason]}${blocked.jira ? ` (${blocked.jira.toUpperCase()})` : ""}`);
+  } catch (e) { toast(e.message, "bad"); }
 };
 
 const attachEvidence = async (caseId, fileObj) => {
@@ -4751,14 +4939,14 @@ const attachEvidence = async (caseId, fileObj) => {
   renderRun(); toast("Evidence added");
 };
 
-const raiseBug = async caseId => {
+const raiseBug = async (caseId, summary) => {
   const r = RUN.run, c = r.cases.find(x => x.id === caseId), res = r.results[caseId] || {};
   const md = [`# ${c.title}`, "", `Failed in test run **${r.name}**${r.release ? ` (release ${r.release})` : ""} on **${r.environment || "—"}**, by ${res.by || ME.user}.`, "",
     ...(res.note ? ["## What happened", "", res.note, ""] : []),
     ...(c.preconditions ? ["## Preconditions", "", c.preconditions, ""] : []),
     "## Steps", "", "| # | Do this | Expected |", "|---|---|---|", ...c.steps.map((s, i) => `| ${i + 1} | ${s.action.replace(/\|/g, "/")} | ${s.expected.replace(/\|/g, "/")} |`), "",
     `_Test case ${c.id}${res.evidence?.length ? ` · ${res.evidence.length} screenshot(s) in the QA platform` : ""}_`].join("\n");
-  const t = await post(`/api/runs/${r.id}/results/${caseId}/jira`, { summary: `${c.title} fails (${r.name})`, markdown: md });
+  const t = await post(`/api/runs/${r.id}/results/${caseId}/jira`, { summary: summary || `${c.title} fails (${r.name})`, markdown: md });
   RUN.run = await api(`/api/runs/${r.id}`);
   renderRun(); toast(`Created ${t.key}`);
 };
@@ -4785,10 +4973,11 @@ const signOffReport = r => {
   const L = [`# Test sign-off: ${r.name}`, "", `_${PROJECT.name} · ${r.release ? `release ${r.release} · ` : ""}${r.environment || ""} · generated ${new Date().toUTCString()} by ${ME.user}_`, "",
     `## Result: ${pass ? "✅ Ready to release" : r.counts.untested ? "⏳ Testing not finished" : "❌ Not ready"}`, "",
     "| Passed | Failed | Blocked | Skipped | To do | Total |", "|---|---|---|---|---|---|",
-    `| ${r.counts.passed} | ${r.counts.failed} | ${r.counts.blocked} | ${r.counts.skipped} | ${r.counts.untested} | ${r.total} |`, ""];
+    `| ${r.counts.passed} | ${r.counts.failed} | ${r.counts.blocked} | ${r.counts.skipped} | ${r.counts.untested} | ${r.total} |`, "",
+    ...(r.counts.blocked ? [`**Blocked:** ${blockedSummary(r).map(([l, n]) => `${n} ${l}`).join(", ")}`, ""] : [])];
   const bad = r.cases.filter(c => ["failed", "blocked"].includes(statusOf(c.id)));
   if (bad.length) L.push("## Failed and blocked", "", "| Test case | Result | Note | Jira |", "|---|---|---|---|",
-    ...bad.map(c => { const x = r.results[c.id]; return `| ${c.id} ${c.title.replace(/\|/g, "/")} | ${ST[x.status][0]} | ${(x.note || "").replace(/\|/g, "/").replace(/\n/g, " ")} | ${(x.jira || []).join(", ")} |`; }), "");
+    ...bad.map(c => { const x = r.results[c.id]; return `| ${c.id} ${c.title.replace(/\|/g, "/")} | ${ST[x.status][0]} | ${x.status === "blocked" && x.blocked ? `[${BLOCK_REASONS[x.blocked.reason]}${x.blocked.jira ? ` ${x.blocked.jira}` : ""}] ` : ""}${(x.note || "").replace(/\|/g, "/").replace(/\n/g, " ")} | ${(x.jira || []).join(", ")} |`; }), "");
   L.push("## All test cases", "", "| Test case | Result | Tested by |", "|---|---|---|",
     ...r.cases.map(c => { const x = r.results[c.id]; return `| ${c.id} ${c.title.replace(/\|/g, "/")} | ${x ? ST[x.status][0] : "To do"} | ${x ? `${x.by}, ${fmt(x.at)}` : ""} |`; }), "",
     "Signed off by: ____________________   Date: ____________");
@@ -5160,7 +5349,7 @@ $("acQ").oninput = () => { AC.q = $("acQ").value.trim(); renderApiChecks(); };
 const loadProjectsPage = async () => {
   PROJECTS = await api("/api/projects");
   $("projList").innerHTML = PROJECTS.map(p => `<div class="card pro proj-card" style="--c:${esc(p.color)}">
-    <div class="pro-top"><span class="proj-badge lg" style="--c:${esc(p.color)}">${esc(p.name[0])}</span><div style="min-width:0"><b>${esc(p.name)}</b><small class="muted mono">${esc(p.key)}</small></div></div>
+    <div class="pro-top">${projBadge(p, "lg")}<div style="min-width:0"><b>${esc(p.name)}</b><small class="muted mono">${esc(p.key)}</small></div></div>
     <div class="row" style="gap:6px">${p.pack === "sinque" ? chip("Data tools + rule checks", "brand", true) : chip("General QA", "", true)}${p.jira_project ? chip(`Jira ${p.jira_project}`, "info", true) : chip("No Jira", "", true)}${chip(p.members.length ? `${p.members.length} member${p.members.length > 1 ? "s" : ""}` : "Everyone", "", true)}</div>
     <div class="stack" style="gap:4px">${p.environments.map(e => `<div class="row" style="gap:8px;font-size:13px"><b style="min-width:70px">${esc(e.name)}</b><span class="muted ellipsis mono" style="font-size:12px;flex:1">${esc(e.base_url || "no address")}</span>${e.production ? chip("prod", "warn", true) : ""}</div>`).join("") || `<span class="muted" style="font-size:13px">No environments</span>`}</div>
     <div class="row" style="gap:6px"><button class="btn btn-ghost btn-sm" data-proj-edit="${esc(p.key)}">${icon("edit")}Edit</button>${p.key !== PROJECT.key ? `<button class="btn btn-ghost btn-sm" data-proj-open="${esc(p.key)}">Open</button>` : chip("Open now", "good", true)}</div>
@@ -5178,6 +5367,24 @@ const envRow = (e = {}, locked = false) => `<div class="env-edit ${locked ? "loc
   <textarea data-e-health rows="2" class="mono" placeholder="Health checks, one per line: Name | /path | expected status (optional)" ${locked ? "disabled" : ""}>${esc((e.health || []).map(h => `${h.name} | ${h.path}${h.expect_status ? ` | ${h.expect_status}` : ""}`).join("\n"))}</textarea>
 </div>`;
 
+/** A project's badge: its logo when it has one, else its first letter on its colour. */
+/** Reads an image file and returns a PNG data URL no larger than size×size. */
+const shrinkImage = (file, size) => new Promise((resolve, reject) => {
+  const img = new Image(), url = URL.createObjectURL(file);
+  img.onload = () => {
+    const k = Math.min(1, size / Math.max(img.width, img.height));
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(img.width * k)); c.height = Math.max(1, Math.round(img.height * k));
+    const g = c.getContext("2d"); g.imageSmoothingQuality = "high"; g.drawImage(img, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url);
+    resolve(c.toDataURL("image/png"));
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("bad image")); };
+  img.src = url;
+});
+const projBadge = (p, cls = "", style = "") => p?.logo
+  ? `<span class="proj-badge has-logo ${cls}" style="--c:${esc(p.color || "#0e7490")};${style}"><img src="/logos/${esc(p.key)}?v=${esc(p.logo.v)}" alt="${esc(p.name)}"></span>`
+  : `<span class="proj-badge ${cls}" style="--c:${esc(p?.color || "#0e7490")};${style}">${esc((p?.name || "?")[0])}</span>`;
 const PROJECT_COLOURS = ["#c4173a", "#ea580c", "#d97706", "#16a34a", "#0e7490", "#2563eb", "#7c3aed", "#db2777", "#475569"];
 
 const projectDialog = p => {
@@ -5193,6 +5400,13 @@ const projectDialog = p => {
         <label class="field">Jira project key <small>optional</small><input id="pdJira" value="${esc(p?.jira_project || "")}" placeholder="e.g. SA"></label>
         <div class="field">Colour<div class="swatches" id="pdSwatches">${PROJECT_COLOURS.map(c => `<button type="button" class="swatch" data-colour="${c}" style="--c:${c}" title="${c}"></button>`).join("")}<label class="swatch custom" title="Pick any colour"><input id="pdColor" type="color" value="${esc(p?.color || "#7c3aed")}"></label><span class="swatch-preview"><span class="proj-badge" id="pdBadge"></span><span class="mono" id="pdHex"></span></span></div></div>
       </div>
+      <div class="field">Logo <small>optional · PNG, JPG or WebP · shown instead of the letter</small>
+        <div class="logo-pick">
+          <span id="pdLogoPrev"></span>
+          <label class="btn btn-ghost btn-sm" style="cursor:pointer">${icon("plus")}<span id="pdLogoLbl">${p?.logo ? "Change logo" : "Upload logo"}</span><input type="file" id="pdLogo" accept="image/png,image/jpeg,image/webp" hidden></label>
+          <button type="button" class="btn btn-ghost btn-sm ${p?.logo ? "" : "hidden"}" id="pdLogoDel" style="color:var(--bad)">${icon("trash")}Remove</button>
+          <span class="muted" style="font-size:12px">Square works best. It's resized to 256 px.</span>
+        </div></div>
       <label class="field">Who can open it <small>tester usernames, comma separated · empty = everyone</small><input id="pdMembers" value="${esc((p?.members || []).join(", "))}"></label>
       <div><div class="section-title" style="margin-bottom:6px">Environments</div>
         <div id="pdEnvs" class="stack" style="gap:8px">${(p?.environments || [{}]).map(e => envRow(e, sinque && e.id === "dev")).join("")}</div>
@@ -5203,6 +5417,16 @@ const projectDialog = p => {
   el.querySelector(".modal").style.maxWidth = "820px";
   const q = s => el.querySelector(s);
   // Colour: preset swatches, or any colour from the picker; the badge previews the sidebar look.
+  // Logo: picked here, uploaded on Save (so a new project gets it too). null = remove, undefined = unchanged.
+  let logoData;
+  const paintLogo = () => {
+    const name = (q("#pdName").value || p?.name || "?").trim(), color = q("#pdColor").value;
+    q("#pdLogoPrev").innerHTML = logoData
+      ? `<span class="proj-badge lg has-logo" style="--c:${esc(color)}"><img src="${logoData}" alt=""></span>`
+      : projBadge(logoData === null ? { name, color } : { ...(p || {}), name, color }, "lg");
+    q("#pdLogoDel").classList.toggle("hidden", !(logoData || (p?.logo && logoData !== null)));
+    q("#pdLogoLbl").textContent = logoData || (p?.logo && logoData !== null) ? "Change logo" : "Upload logo";
+  };
   const paintColour = () => {
     const c = q("#pdColor").value.toLowerCase(), preset = PROJECT_COLOURS.includes(c);
     el.querySelectorAll("[data-colour]").forEach(b => b.classList.toggle("on", b.dataset.colour === c));
@@ -5211,11 +5435,21 @@ const projectDialog = p => {
     q("#pdBadge").style.setProperty("--c", c);
     q("#pdBadge").textContent = (q("#pdName").value || p?.name || "?").trim()[0]?.toUpperCase() || "?";
     q("#pdHex").textContent = c;
+    paintLogo?.();
   };
   el.querySelectorAll("[data-colour]").forEach(b => b.onclick = () => { q("#pdColor").value = b.dataset.colour; paintColour(); });
   q("#pdColor").oninput = paintColour;
   q("#pdName").addEventListener("input", paintColour);
   paintColour();
+  q("#pdLogo").onchange = async () => {
+    const f = q("#pdLogo").files[0];
+    q("#pdLogo").value = "";
+    if (!f) return;
+    if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { toast("Pick a PNG, JPG or WebP image. SVG isn't allowed.", "warn"); return; }
+    if (f.size > 8 * 1024 * 1024) { toast("That image is over 8 MB. Pick a smaller one.", "warn"); return; }
+    try { logoData = await shrinkImage(f, 256); paintLogo(); } catch { toast("Couldn't read that image.", "bad"); }
+  };
+  q("#pdLogoDel").onclick = () => { logoData = null; paintLogo(); };
   const bindEnv = () => q("#pdEnvs").querySelectorAll("[data-e-del]").forEach(b => b.onclick = () => b.closest(".env-edit").remove());
   bindEnv();
   q("#pdAddEnv").onclick = () => { q("#pdEnvs").insertAdjacentHTML("beforeend", envRow({})); bindEnv(); };
@@ -5227,9 +5461,11 @@ const projectDialog = p => {
     })).filter(e => e.name || e.base_url);
     const body = { name: q("#pdName").value || p?.name, jira_project: q("#pdJira").value, color: q("#pdColor").value, members: q("#pdMembers").value.split(",").map(x => x.trim()).filter(Boolean), environments };
     const saved = p ? await api(`/api/projects/${p.key}`, { method: "PUT", body: JSON.stringify(body) }) : await post("/api/projects", { ...body, key: q("#pdKey").value });
+    if (logoData) await api(`/api/projects/${saved.key}/logo`, { method: "PUT", body: JSON.stringify({ data: logoData }) });
+    else if (logoData === null && p?.logo) await api(`/api/projects/${saved.key}/logo`, { method: "DELETE" });
     close(); await loadProjectsPage();
     PROJECTS = await api("/api/projects");
-    if (saved.key === PROJECT.key) { PROJECT = PROJECTS.find(x => x.key === saved.key); applyProject(); }
+    if (saved.key === PROJECT.key) { PROJECT = PROJECTS.find(x => x.key === saved.key); applyProject(); if (!$("view-home").classList.contains("hidden")) loadHome().catch(() => {}); }
     if (!$("view-settings").classList.contains("hidden")) { renderSetTabs(); renderSetPane(); }
     toast(`Saved ${saved.name}`);
   });
@@ -5538,6 +5774,225 @@ api("/api/me").then(me => {
 $("meWho").onclick = ownPasswordDialog;
 $("bugBtn").onclick = bugReportDialog;
 $("logoutBtn").onclick = async () => { await fetch("/logout", { method: "POST" }); location.href = "/login"; };
+
+
+// ---------- notifications ----------
+let NOTIF = { items: [], unread: 0 };
+const paintBell = () => {
+  const n = NOTIF.unread, c = $("bellCount"), was = +(c.dataset.n || 0);
+  c.textContent = n > 99 ? "99+" : String(n);
+  c.classList.toggle("hidden", !n);
+  c.dataset.n = n;
+  $("bellBtn").title = n ? `${n} unread notification${n === 1 ? "" : "s"}` : "Notifications";
+  if (n > was) { $("bellBtn").classList.remove("ring"); void $("bellBtn").offsetWidth; $("bellBtn").classList.add("ring"); }
+};
+const renderNotifPanel = () => {
+  const items = NOTIF.items, many = new Set(items.map(n => n.project)).size > 1;
+  const projName = key => PROJECTS.find(p => p.key === key)?.name || key;
+  $("notifPanel").innerHTML = `<div class="nt-head"><div><h3>Notifications</h3><small>${NOTIF.unread ? `${NOTIF.unread} unread` : "You're all caught up"}</small></div>
+      ${NOTIF.unread ? `<button class="btn btn-ghost btn-sm" id="ntAll">${icon("check")}Mark all read</button>` : ""}</div>
+    ${items.length ? `<div class="nt-list">${items.map(n => `<button class="nt-item ${n.read ? "" : "unread"}" data-nt="${esc(n.id)}">
+        <span class="nt-ic t-${esc(n.tone)}">${icon(n.icon || "info")}</span>
+        <div style="min-width:0"><b>${esc(n.title)}</b>${n.detail ? `<small class="ellipsis">${esc(n.detail)}</small>` : ""}
+          <small class="nt-meta">${many || n.project !== PROJECT?.key ? `${esc(projName(n.project))} · ` : ""}${ago(n.at)}</small></div></button>`).join("")}</div>`
+      : `<div class="nt-empty"><div class="ring">${icon("bell")}</div><b style="display:block;color:var(--ink);margin-bottom:4px">Nothing yet</b>You'll hear here when API checks or UI tests start failing, an environment goes down, or someone fails a case in your run.</div>`}`;
+  const all = $("ntAll");
+  if (all) all.onclick = async () => { NOTIF = await post("/api/notifications/read", { ids: null }); paintBell(); renderNotifPanel(); };
+  $$("#notifPanel [data-nt]").forEach(b => b.onclick = async () => {
+    const n = NOTIF.items.find(x => x.id === b.dataset.nt);
+    closeNotifs();
+    if (!n.read) post("/api/notifications/read", { ids: [n.id] }).then(r => { NOTIF = r; paintBell(); }).catch(() => {});
+    if (PROJECT && n.project !== PROJECT.key && PROJECTS.some(p => p.key === n.project)) switchProject(n.project);
+    const l = n.link || {};
+    if (l.run) openRun(l.run); else if (l.view) show(l.view);
+  });
+};
+const closeNotifs = () => $("notifPanel").classList.add("hidden");
+const openNotifs = () => {
+  const panel = $("notifPanel"), r = $("bellBtn").getBoundingClientRect();
+  panel.style.left = `${Math.round(r.right + 14)}px`;
+  panel.style.top = `${Math.round(Math.max(12, r.top - 6))}px`;
+  renderNotifPanel();
+  panel.classList.remove("hidden");
+  loadNotifs();
+};
+const loadNotifs = async () => {
+  try {
+    NOTIF = await api("/api/notifications");
+    paintBell();
+    if (!$("notifPanel").classList.contains("hidden")) renderNotifPanel();
+  } catch { /* signed out or offline: try again later */ }
+};
+$("bellBtn").onclick = e => { e.stopPropagation(); $("notifPanel").classList.contains("hidden") ? openNotifs() : closeNotifs(); };
+document.addEventListener("click", e => { if (!e.target.closest("#notifPanel, #bellBtn")) closeNotifs(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeNotifs(); });
+document.addEventListener("visibilitychange", () => { if (!document.hidden) loadNotifs(); });
+setInterval(() => { if (!document.hidden) loadNotifs(); }, 60000);
+loadNotifs();
+
+// ---------- My work: cases assigned to me in open runs ----------
+const BLOCK_REASONS = { bug: "Blocked by a bug", env: "Environment down", data: "Waiting for test data", build: "Waiting for a build or deploy", access: "No access or login", other: "Something else" };
+const BLOCK_SHORT = { bug: "bug", env: "environment down", data: "waiting for test data", build: "waiting for a build", access: "no access", other: "other reasons" };
+const me = () => String(ME.user || "").toLowerCase();
+const nameInitials = n => String(n || "?").slice(0, 2).toUpperCase();
+const whoChip = n => `<span class="who-chip" title="Assigned to ${esc(n)}" style="background:${avatarColor(n)}">${esc(nameInitials(n))}</span>`;
+
+/** "8 blocked by SA-201 · 3 environment down" for a run. */
+const blockedSummary = r => {
+  const groups = new Map();
+  for (const c of r.cases) {
+    const x = r.results[c.id];
+    if (x?.status !== "blocked") continue;
+    const label = !x.blocked ? "no reason given" : x.blocked.reason === "bug" && x.blocked.jira ? `by ${x.blocked.jira}` : BLOCK_SHORT[x.blocked.reason];
+    groups.set(label, (groups.get(label) || 0) + 1);
+  }
+  return [...groups.entries()].sort((a, b) => b[1] - a[1]);
+};
+
+const loadMyWorkBadge = async () => {
+  try {
+    const w = await api("/api/mywork");
+    $("myWorkBadge").textContent = w.todo > 99 ? "99+" : String(w.todo);
+    $("myWorkBadge").classList.toggle("hidden", !w.todo);
+    return w;
+  } catch { return null; }
+};
+
+const loadMyWork = async () => {
+  $("myWorkList").innerHTML = `<div class="card">${skeletonRows(4)}</div>`;
+  const w = await loadMyWorkBadge() || { runs: [], todo: 0 };
+  $("myWorkSub").textContent = w.todo ? `${w.todo} case${w.todo === 1 ? "" : "s"} to test in ${w.runs.filter(r => r.todo.length).length} run${w.runs.filter(r => r.todo.length).length === 1 ? "" : "s"}, most important first.` : "Cases assigned to you in open test runs, across your projects.";
+  if (!w.runs.length) {
+    $("myWorkList").innerHTML = `<div class="card">${empty("inbox", "Nothing assigned to you", "When a lead splits a test run, your cases show up here. You can also assign yourself cases on any run.")}</div>`;
+    return;
+  }
+  $("myWorkList").innerHTML = w.runs.map(x => {
+    const pct = x.total ? Math.round((x.done / x.total) * 100) : 0;
+    return `<div class="card mw-run">
+      <div class="card-head"><div style="min-width:0">
+          <div class="row" style="gap:8px;margin-bottom:4px">${projBadge({ ...x.project, ...(PROJECTS.find(q => q.key === x.project.key) || {}) }, "", "width:20px;height:20px;font-size:10px;border-radius:6px")}<span class="muted" style="font-size:12.5px">${esc(x.project.name)}${x.run.release ? ` · ${esc(x.run.release)}` : ""}${x.run.environment ? ` · ${esc(x.run.environment)}` : ""}</span></div>
+          <h2 class="ellipsis">${esc(x.run.name)}</h2>
+          <p>${x.done} of ${x.total} done${x.failed ? ` · <span style="color:var(--bad);font-weight:600">${x.failed} failed</span>` : ""}${x.blocked ? ` · <span style="color:var(--warn);font-weight:600">${x.blocked} blocked</span>` : ""}</p></div>
+        <button class="btn ${x.todo.length ? "btn-primary" : "btn-ghost"} btn-sm" data-mw-open="${esc(x.project.key)}|${esc(x.run.id)}|${esc(x.todo[0]?.id || "")}">${x.todo.length ? `${icon("play")}Continue` : "Open run"}</button></div>
+      <div class="mw-bar"><span style="width:${pct}%"></span></div>
+      ${x.todo.length ? `<div class="home-list">${x.todo.slice(0, 8).map(c => `<div class="home-row click" data-mw-open="${esc(x.project.key)}|${esc(x.run.id)}|${esc(c.id)}">
+          <span class="mono muted" style="font-size:12px;flex:none">${esc(c.id)}</span><b class="ellipsis" style="flex:1;min-width:0;font-weight:500">${esc(c.title)}</b>${chip(c.priority, PRIO_TONE[c.priority], c.priority === "low")}</div>`).join("")}
+        ${x.todo.length > 8 ? `<div class="card-pad muted" style="font-size:12.5px;padding-top:8px">and ${x.todo.length - 8} more</div>` : ""}</div>`
+        : `<div class="hm-clear"><span class="ic">${icon("check")}</span><div><b>All your cases are done</b><div class="muted" style="font-size:13px">Nice work. Failed and blocked ones are on the run.</div></div></div>`}
+    </div>`;
+  }).join("");
+  $$("#myWorkList [data-mw-open]").forEach(b => b.onclick = async () => {
+    const [key, runId, caseId] = b.dataset.mwOpen.split("|");
+    if (PROJECT.key !== key) switchProject(key);
+    await openRun(runId); // opening another run resets the filter, so set it afterwards
+    RUN.filter = "mine";
+    $$("#runFilter button").forEach(x => x.classList.toggle("on", x.dataset.f === "mine"));
+    if (caseId) RUN.open = caseId;
+    renderRunCases();
+    if (caseId) document.querySelector(`[data-rc="${caseId}"]`)?.scrollIntoView({ block: "center" });
+  });
+};
+
+/** Lead: split a run between testers, or hand all remaining cases to one person. */
+const assignDialog = async () => {
+  const r = RUN.run, names = await api("/api/testers/names");
+  const todo = r.cases.filter(c => statusOf(c.id) === "untested");
+  const unassigned = todo.filter(c => !r.assignees?.[c.id]);
+  const counts = {};
+  for (const id of r.case_ids) { const w = r.assignees?.[id]; if (w) counts[w] = (counts[w] || 0) + 1; }
+  const { el, close } = openModal(`
+    <div class="modal-head"><h3>Who tests what</h3><button class="icon-btn" data-close>${icon("x")}</button></div>
+    <div class="modal-body">
+      <p class="muted" style="margin:0 0 12px;font-size:13.5px">Pick testers to split the cases between. High-priority cases are shared out first, so everyone gets some. Each tester is notified and sees their cases under <b>My work</b>.</p>
+      <div class="as-people">${names.map(n => `<label class="as-person"><input type="checkbox" value="${esc(n)}"><span class="who-chip" style="background:${avatarColor(n)}">${esc(nameInitials(n))}</span><span style="flex:1">${esc(n)}${n === me() ? ` <span class="muted">(you)</span>` : ""}</span><small class="muted">${counts[n] ? `${counts[n]} now` : ""}</small></label>`).join("")}</div>
+      <div class="field" style="margin-top:14px">Which cases
+        <div class="seg" id="asScope" style="margin-top:6px">
+          <button data-s="unassigned">Unassigned to do (${unassigned.length})</button><button data-s="todo">All to do (${todo.length})</button><button data-s="all">Every case (${r.total})</button></div></div>
+    </div>
+    <div class="modal-foot">${Object.keys(counts).length ? `<button class="btn btn-ghost" id="asClear" style="margin-right:auto">Clear all</button>` : ""}<button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="asGo"><span class="spin"></span>${icon("user-check")}Split between them</button></div>`);
+  // Start on the first group that has cases in it.
+  let scope = unassigned.length ? "unassigned" : todo.length ? "todo" : "all";
+  el.querySelector(`#asScope [data-s="${scope}"]`).classList.add("on");
+  el.querySelectorAll("#asScope button").forEach(b => b.onclick = () => { scope = b.dataset.s; el.querySelectorAll("#asScope button").forEach(x => x.classList.toggle("on", x === b)); });
+  el.querySelector("#asGo").onclick = () => busy(el.querySelector("#asGo"), async () => {
+    const people = [...el.querySelectorAll(".as-people input:checked")].map(i => i.value);
+    if (!people.length) throw new Error("Pick at least one tester.");
+    const ids = (scope === "unassigned" ? unassigned : scope === "todo" ? todo : r.cases).map(c => c.id);
+    if (!ids.length) throw new Error("There are no cases in that group.");
+    const res = await post(`/api/runs/${r.id}/assign`, { case_ids: ids, split: people });
+    close(); await openRun(r.id); loadMyWorkBadge();
+    toast(Object.entries(res.given).map(([w, n]) => `${w}: ${n}`).join(" · "));
+  });
+  const clr = el.querySelector("#asClear");
+  if (clr) clr.onclick = () => busy(clr, async () => { await post(`/api/runs/${r.id}/assign`, { case_ids: r.case_ids, to: null }); close(); await openRun(r.id); loadMyWorkBadge(); toast("Assignments cleared"); });
+};
+
+/** Before raising a bug: show open tickets that look the same, so the tester can link instead of duplicating. */
+const raiseBugDialog = async caseId => {
+  const r = RUN.run, c = r.cases.find(x => x.id === caseId);
+  const summary = `${c.title} fails (${r.name})`;
+  const { el, close } = openModal(`
+    <div class="modal-head"><h3>Raise a bug in ${esc(PROJECT.jira_project)}</h3><button class="icon-btn" data-close>${icon("x")}</button></div>
+    <div class="modal-body">
+      <label class="field">Title<input id="rbSum" value="${esc(summary)}"></label>
+      <div class="rb-similar" id="rbSimilar"><div class="muted" style="font-size:13px"><span class="spin" style="display:inline-block"></span> Looking for open tickets like this one…</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="rbNew"><span class="spin"></span>${icon("plus")}Create a new bug</button></div>`);
+  const look = async () => {
+    const q = el.querySelector("#rbSum").value;
+    try {
+      const s = await api(`/api/jira/similar?q=${encodeURIComponent(`${c.title} ${q}`)}`);
+      el.querySelector("#rbSimilar").innerHTML = s.tickets.length
+        ? `<div class="rb-head">${icon("alert")}<b>${s.tickets.length} open ticket${s.tickets.length === 1 ? " looks" : "s look"} similar.</b> If one is the same bug, link it instead of creating a duplicate.</div>
+           ${s.tickets.map(t => `<div class="rb-t"><div style="min-width:0;flex:1"><div class="row" style="gap:6px"><a href="${esc(s.base_url)}/browse/${esc(t.key)}" target="_blank" rel="noopener" class="mono" style="font-weight:600">${esc(t.key)}</a>${chip(t.status || "", t.status_category === "indeterminate" ? "info" : "", true)}<span class="muted" style="font-size:12px">${t.score}% match</span></div><div class="ellipsis" style="font-size:13.5px">${esc(t.summary)}</div></div>
+             <button class="btn btn-ghost btn-sm" data-link="${esc(t.key)}"><span class="spin"></span>Link this</button></div>`).join("")}`
+        : `<div class="rb-none">${icon("check")}No open tickets look like this one. Go ahead and create it.</div>`;
+      el.querySelectorAll("[data-link]").forEach(b => b.onclick = () => busy(b, async () => {
+        await post(`/api/runs/${r.id}/results/${caseId}/link`, { key: b.dataset.link });
+        close(); RUN.run = await api(`/api/runs/${r.id}`); renderRun(); toast(`Linked to ${b.dataset.link}. No duplicate created.`);
+      }));
+    } catch (e) {
+      el.querySelector("#rbSimilar").innerHTML = `<div class="muted" style="font-size:13px">Couldn't check for similar tickets (${esc(e.message)}). You can still create the bug.</div>`;
+    }
+  };
+  look();
+  el.querySelector("#rbNew").onclick = () => busy(el.querySelector("#rbNew"), async () => { await raiseBug(caseId, el.querySelector("#rbSum").value); close(); });
+};
+
+// ---------- page headers: icon, "project / section" line and the project's colour ----------
+const ALL_PROJECT_VIEWS = new Set(["mywork", "team", "projects", "audit", "settings"]); // pages that aren't about one project
+const decoratePageHeads = () => {
+  $$("section[id^='view-'] > .page-head").forEach(h => {
+    if (h.classList.contains("ph")) return;
+    const view = h.parentElement.id.slice(5);
+    const btn = document.querySelector(`#nav button[data-view="${view}"]`);
+    let label = btn?.previousElementSibling;
+    while (label && !label.classList.contains("nav-label")) label = label.previousElementSibling;
+    h.dataset.view = view;
+    h.dataset.group = label?.textContent.trim() || "";
+    const text = h.firstElementChild;
+    text.classList.add("ph-text");
+    text.insertAdjacentHTML("afterbegin", '<div class="ph-kicker"></div>');
+    h.insertAdjacentHTML("afterbegin", `<span class="ph-icon" aria-hidden="true"><svg class="i"><use href="${btn?.querySelector("use")?.getAttribute("href") || "#i-list"}"/></svg></span>`);
+    h.classList.add("ph");
+  });
+  paintPageHeads();
+};
+const paintPageHeads = () => {
+  const p = typeof PROJECT !== "undefined" ? PROJECT : null;
+  $$(".page-head.ph").forEach(h => {
+    const all = ALL_PROJECT_VIEWS.has(h.dataset.view), g = h.dataset.group;
+    h.style.setProperty("--pc", all || !p ? "var(--brand)" : p.color || "var(--brand)");
+    h.querySelector(".ph-kicker").innerHTML = (all || !p
+      ? `<span class="ph-all">${icon("layers")}</span><span>All projects</span>`
+      : `${projBadge(p, "xs")}<span>${esc(p.name)}</span>`) + (g ? `<i>/</i><span>${esc(g)}</span>` : "");
+  });
+};
+decoratePageHeads();
+
+$("myWorkRefresh").onclick = () => loadMyWork().catch(e => toast(e.message, "bad"));
+setInterval(() => { if (!document.hidden) loadMyWorkBadge(); }, 60000);
+loadMyWorkBadge();
 
 search();
 show("home");

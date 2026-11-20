@@ -378,3 +378,28 @@ export const testCasesToWiki = d => {
   if (d.questions?.length) L.push("", "*Open questions*", ...d.questions.map(q => `* ${q}`));
   return L.join("\n");
 };
+
+const STOP = new Set("the a an and or of to in on for with is are be when after before from by it its this that can cant cannot does doesnt not no fails failed failing shows show should page user users test case".split(" "));
+/**
+ * Open tickets that look like the bug about to be raised, best match first, so a tester
+ * can link to an existing ticket instead of creating a duplicate. Read-only.
+ */
+export const similarTickets = async (jiraProject, text) => {
+  if (!/^[A-Z][A-Z0-9]*$/.test(jiraProject || "")) throw badRequest("This project has no Jira project key yet.");
+  const words = [...new Set(String(text).toLowerCase().replace(/[^a-z0-9 ]+/g, " ").split(/\s+/).filter(w => w.length > 2 && !STOP.has(w)))].slice(0, 8);
+  if (!words.length) return { tickets: [], words };
+  const res = await call("POST", "/rest/api/3/search/jql", {
+    body: { jql: `project = "${jiraProject}" AND statusCategory != Done AND (${words.map(w => `summary ~ "${jqlText(w)}*"`).join(" OR ")}) ORDER BY updated DESC`, fields: LIST_FIELDS, maxResults: 40 },
+  });
+  const found = (res.issues || []).map(shape);
+  // Words in most of the results ("Admin - …" on every ticket) don't tell tickets apart: leave them out.
+  const lower = found.map(t => String(t.summary || "").toLowerCase());
+  const useful = found.length >= 5 ? words.filter(w => lower.filter(s => s.includes(w)).length / found.length <= 0.6) : words;
+  const scoring = useful.length ? useful : words;
+  const need = Math.min(2, scoring.length);
+  const tickets = found.map((t, i) => {
+    const hits = scoring.filter(w => lower[i].includes(w)).length;
+    return { ...t, hits, score: Math.round((hits / scoring.length) * 100) };
+  }).filter(t => t.hits >= need).sort((a, b) => b.score - a.score).slice(0, 5);
+  return { tickets, words, base_url: jira().baseUrl };
+};

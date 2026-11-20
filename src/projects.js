@@ -1,6 +1,7 @@
 // Projects: one per product the team tests. Sinque is built in and keeps its own
 // "pack" (database, rule checks, scenarios); any other project gets the general
 // QA features: test cases, runs, API checks, environment health and Jira.
+import fs from "fs";
 import { config } from "./config.js";
 import { badRequest } from "./db.js";
 import { dataPath, now, readJson, writeJson } from "./store.js";
@@ -55,6 +56,8 @@ const clean = (p, existing) => {
     jira_project: String(p.jira_project ?? existing?.jira_project ?? "").trim().toUpperCase(),
     members: (Array.isArray(p.members) ? p.members : existing?.members || []).map(m => String(m).toLowerCase()).filter(Boolean),
     environments: envs,
+    // The logo only changes through setLogo / removeLogo.
+    logo: existing?.logo || null,
     created_at: existing?.created_at || now(),
   };
 };
@@ -97,6 +100,60 @@ export const saveProject = body => {
   }
   writeJson(FILE, [...saved.filter(x => x.key !== p.key), p]);
   return allProjects().find(x => x.key === p.key);
+};
+
+// ---------- project logos ----------
+// PNG, JPEG or WebP only (no SVG: it can carry scripts). Checked by content, not by name.
+const LOGO_TYPES = { png: "image/png", jpg: "image/jpeg", webp: "image/webp" };
+const MAX_LOGO = 300 * 1024;
+const sniff = b =>
+  b.length > 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47 ? "png"
+  : b.length > 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff ? "jpg"
+  : b.length > 12 && b.toString("ascii", 0, 4) === "RIFF" && b.toString("ascii", 8, 12) === "WEBP" ? "webp" : null;
+const logoDir = key => dataPath("projects", key);
+
+/** Updates one field of a saved project, adding Sinque's saved entry when it has none yet. */
+const setField = (key, field, value) => {
+  const saved = readJson(FILE, []);
+  let entry = saved.find(p => p.key === key);
+  if (!entry) {
+    if (key !== "SINQUE") throw Object.assign(new Error("Project not found."), { status: 404 });
+    entry = { key: "SINQUE" };
+    saved.push(entry);
+  }
+  entry[field] = value;
+  writeJson(FILE, saved);
+  return allProjects().find(p => p.key === key);
+};
+
+export const setLogo = (key, dataUrl) => {
+  const p = allProjects().find(x => x.key === String(key).toUpperCase());
+  if (!p) throw Object.assign(new Error("Project not found."), { status: 404 });
+  const m = /^data:image\/[\w+.-]+;base64,([A-Za-z0-9+/=]+)$/.exec(String(dataUrl || ""));
+  if (!m) throw badRequest("Upload a PNG, JPG or WebP image.");
+  const buf = Buffer.from(m[1], "base64");
+  if (buf.length > MAX_LOGO) throw badRequest("The logo can be up to 300 KB.");
+  const ext = sniff(buf);
+  if (!ext) throw badRequest("That isn't a PNG, JPG or WebP image. (SVG isn't allowed.)");
+  fs.mkdirSync(logoDir(p.key), { recursive: true });
+  for (const e of Object.keys(LOGO_TYPES)) fs.rmSync(`${logoDir(p.key)}/logo.${e}`, { force: true });
+  fs.writeFileSync(`${logoDir(p.key)}/logo.${ext}`, buf);
+  return setField(p.key, "logo", { file: `logo.${ext}`, v: Date.now().toString(36) });
+};
+
+export const removeLogo = key => {
+  const p = allProjects().find(x => x.key === String(key).toUpperCase());
+  if (!p) throw Object.assign(new Error("Project not found."), { status: 404 });
+  for (const e of Object.keys(LOGO_TYPES)) fs.rmSync(`${logoDir(p.key)}/logo.${e}`, { force: true });
+  return setField(p.key, "logo", null);
+};
+
+export const logoFile = project => {
+  const file = project.logo?.file;
+  const ext = file && /^logo\.(png|jpg|webp)$/.exec(file)?.[1];
+  const full = ext && `${logoDir(project.key)}/${file}`;
+  if (!full || !fs.existsSync(full)) throw Object.assign(new Error("No logo."), { status: 404 });
+  return { path: full, type: LOGO_TYPES[ext] };
 };
 
 export const deleteProject = key => {

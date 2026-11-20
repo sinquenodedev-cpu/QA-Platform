@@ -24,10 +24,10 @@ import { cardPage, loginCard } from "./logincard.js";
 import { homeData } from "./home.js";
 import { getJob, listJobs, startJob } from "./jobs.js";
 import { inventory, planCleanup, runCleanup } from "./cleanup.js";
-import { allProjects, deleteProject, getProject, projectsFor, saveProject } from "./projects.js";
+import { allProjects, deleteProject, getProject, logoFile, projectsFor, removeLogo, saveProject, setLogo } from "./projects.js";
 import {
   addEvidence, createRun, deleteCase, deleteRun, deleteSuite, evidenceFile, getRun, importCases, listCases, listRuns, listSuites,
-  saveCase, saveSuite, setResult, setRunStatus,
+  saveCase, saveSuite, setResult, setRunStatus, assignCases,
 } from "./testmgmt.js";
 import { checkHistory, deleteCheck, importChecks, listChecks, orderForChain, recordShape, runCheck, saveCheck, saveRuns } from "./apichecks.js";
 import { clearValues, listValues } from "./apivalues.js";
@@ -39,9 +39,10 @@ import { coverage as apiCoverage, fetchSpec, parseOpenApi, readSpecText, saveSpe
 import { sinqueApiInfo } from "./sinqueapi.js";
 import { connect as connectJira, connectionInfo as jiraConnection, disconnect as disconnectJira, requestContext } from "./jirauser.js";
 import { checkAll, projectHealth, startHealth } from "./health.js";
-import { overview } from "./overview.js";
+import { myWork, overview } from "./overview.js";
+import { listNotifications, markRead } from "./notify.js";
 import {
-  addComment, createTicket, getTicket, postTestCases, updateTicket, jiraEnabled, jiraInfo, linkUsers, listTickets, readTestCases, saveTestCases, testCasesToWiki, ticketsFor,
+  addComment, createTicket, getTicket, postTestCases, updateTicket, jiraEnabled, jiraInfo, linkUsers, listTickets, readTestCases, saveTestCases, testCasesToWiki, ticketsFor, similarTickets,
 } from "./jira.js";
 import {
   addTester, changeOwnPassword, initTesters, listTesters, removeTester, resetTesterPassword, roleOf, setTesterRole,
@@ -102,6 +103,8 @@ const loginSummary = ({ status, ok, body }) => ({
 });
 
 /** The project the tester has open (sent by the page as X-Project). */
+/** Testers who can open this project (for assigning cases). */
+const testersFor = p => listTesters().filter(t => projectsFor(t.name, t.role).some(x => x.key === p.key));
 const proj = req => getProject(req.headers["x-project"], req.actor, roleOf(req.actor));
 const ID = "([\\w-]+)";
 
@@ -148,10 +151,27 @@ const routes = [
 
   ["GET", /^\/api\/home$/, () => homeData()],
   ["GET", /^\/api\/overview$/, req => overview(proj(req))],
+  ["GET", /^\/api\/mywork$/, req => myWork(req.actor, roleOf(req.actor))],
+  ["GET", /^\/api\/testers\/names$/, req => testersFor(proj(req)).map(t => t.name)],
+  ["GET", /^\/api\/jira\/similar$/, (req, url) => similarTickets(proj(req).jira_project, url.searchParams.get("q") || "")],
+  ["GET", /^\/api\/notifications$/, req => listNotifications(req.actor, roleOf(req.actor))],
+  ["POST", /^\/api\/notifications\/read$/, async req => { const body = await readBody(req); return markRead(req.actor, roleOf(req.actor), body.ids); }],
   ["GET", /^\/api\/jobs$/, req => listJobs(req.actor)],
 
   // ---------- Platform: projects ----------
   ["GET", /^\/api\/projects$/, req => projectsFor(req.actor, roleOf(req.actor))],
+  ["PUT", /^\/api\/projects\/([A-Z0-9]+)\/logo$/, async (req, url, [key]) => {
+    requireAdmin(req);
+    const p = setLogo(key, (await readBody(req)).data);
+    audit(req.actor, "change project logo", { project: p.key });
+    return p;
+  }],
+  ["DELETE", /^\/api\/projects\/([A-Z0-9]+)\/logo$/, (req, url, [key]) => {
+    requireAdmin(req);
+    const p = removeLogo(key);
+    audit(req.actor, "remove project logo", { project: p.key });
+    return p;
+  }],
   ["POST", /^\/api\/projects$/, async req => {
     requireAdmin(req);
     const r = saveProject({ ...(await readBody(req)), create: true });
@@ -320,6 +340,20 @@ const routes = [
     requireAdmin(req);
     const p = proj(req), r = deleteRun(p, id);
     audit(req.actor, "delete test run", { project: p.key, run: id });
+    return r;
+  }],
+  ["POST", new RegExp(`^/api/runs/${ID}/assign$`), async (req, url, [id]) => {
+    const p = proj(req), body = await readBody(req);
+    const r = assignCases(p, id, body, req.actor, testersFor(p).map(t => t.name));
+    audit(req.actor, "assign test cases", { project: p.key, run: id, cases: (body.case_ids || []).length || null, to: body.to ?? null, split: body.split || null });
+    return r;
+  }],
+  ["POST", new RegExp(`^/api/runs/${ID}/results/${ID}/link$`), async (req, url, [id, caseId]) => {
+    const p = proj(req), body = await readBody(req), key = String(body.key || "").trim().toUpperCase();
+    if (!p.jira_project || !new RegExp(`^${p.jira_project}-\\d+$`).test(key)) throw Object.assign(new Error(`Pick a ${p.jira_project || "Jira"} ticket.`), { status: 400 });
+    const run = getRun(p, id);
+    const r = setResult(p, id, caseId, { status: run.results[caseId]?.status || "failed", jira: key }, req.actor);
+    audit(req.actor, "link jira ticket", { project: p.key, ticket: key, run: id, test_case: caseId });
     return r;
   }],
   ["POST", new RegExp(`^/api/runs/${ID}/status$`), async (req, url, [id]) => {
@@ -825,6 +859,13 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
       res.end(fs.readFileSync(INDEX_HTML));
+      return;
+    }
+    const logo = req.method === "GET" && url.pathname.match(/^\/logos\/([A-Z0-9]+)$/);
+    if (logo) {
+      const f = logoFile(getProject(logo[1], user, roleOf(user)));
+      res.writeHead(200, { "Content-Type": f.type, "Cache-Control": "private, max-age=86400", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'" });
+      res.end(fs.readFileSync(f.path));
       return;
     }
     const ui = req.method === "GET" && url.pathname.match(/^\/uifiles\/([A-Z0-9]+)\/([\w]+)\/([\w.-]+)$/);
